@@ -36,8 +36,4 @@ public class User {
                 this.password != null && !this.password.isEmpty() &&
                 this.wallet == null;
     }
-
-    public double getBalance() {
-        return wallet.getBalance();
-    }
 }

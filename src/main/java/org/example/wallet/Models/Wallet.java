@@ -11,7 +11,7 @@ public class Wallet {
     private Integer id;
     private double balance;
 
-    protected Wallet() {
+    public Wallet() {
         this.balance = 0.0;
     }
 

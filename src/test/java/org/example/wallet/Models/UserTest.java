@@ -1,5 +1,6 @@
 package org.example.wallet.Models;
 
+import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,12 +78,74 @@ public class UserTest {
         User user = new User();
         user.setName("John Doe");
         user.setPassword("password123");
-        user.ownWallet();
 
+        user.ownWallet();
         Wallet wallet = user.getWallet();
         wallet.deposit(100);
 
         assertEquals(100, wallet.getBalance());
-        assertEquals(100, user.getBalance());
+    }
+
+    @Test
+    void testUserWalletAdd0Balance() {
+        User user = new User();
+        user.setName("John Doe");
+        user.setPassword("password123");
+
+        user.ownWallet();
+        Wallet wallet = user.getWallet();
+
+        assertThrows(IllegalArgumentException.class, () -> wallet.deposit(0));
+    }
+
+    @Test
+    void testUserWalletAddNegativeBalance() {
+        User user = new User();
+        user.setName("John Doe");
+        user.setPassword("password123");
+
+        user.ownWallet();
+        Wallet wallet = user.getWallet();
+
+        assertThrows(IllegalArgumentException.class, () -> wallet.deposit(-100));
+    }
+
+    @Test
+    void testUserWalletWithdraw0Balance() {
+        User user = new User();
+        user.setName("John Doe");
+        user.setPassword("password123");
+
+        user.ownWallet();
+        Wallet wallet = user.getWallet();
+
+        assertThrows(IllegalArgumentException.class, () -> wallet.withdraw(0));
+    }
+
+    @Test
+    void testUserWalletWithdraw100WhileBalanceIs50() {
+        User user = new User();
+        user.setName("John Doe");
+        user.setPassword("password123");
+
+        user.ownWallet();
+        Wallet wallet = user.getWallet();
+        wallet.deposit(50);
+
+        assertThrows(InsufficientBalanceException.class, () -> wallet.withdraw(100));
+    }
+
+    @Test
+    void testUserWalletWithdraw150From550AndUpdateBalance350() {
+        User user = new User();
+        user.setName("John Doe");
+        user.setPassword("password123");
+
+        user.ownWallet();
+        Wallet wallet = user.getWallet();
+        wallet.deposit(500);
+        wallet.withdraw(150);
+
+        assertEquals(350, wallet.getBalance());
     }
 }
