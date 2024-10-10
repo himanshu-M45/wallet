@@ -31,13 +31,6 @@ public class UserTest {
     }
 
     @Test
-    void testSetUserId() {
-        User user = new User();
-        user.setId(1);
-        assertEquals(1, user.getId());
-    }
-
-    @Test
     void testGetNullUserId() {
         User user = new User();
         assertNull(user.getId());
@@ -48,12 +41,10 @@ public class UserTest {
         User user1 = new User();
         user1.setName("John Doe");
         user1.setPassword("password123");
-        user1.setId(1);
 
         User user2 = new User();
         user2.setName("John Doe");
         user2.setPassword("password123");
-        user2.setId(2);
 
         assertNotEquals(user1, user2);
     }
@@ -77,7 +68,6 @@ public class UserTest {
         User user = new User();
         user.setName("John Doe");
         user.setPassword("password123");
-        user.setId(3);
         user.ownWallet();
         assertNotNull(user.getWallet());
     }
@@ -87,7 +77,6 @@ public class UserTest {
         User user = new User();
         user.setName("John Doe");
         user.setPassword("password123");
-        user.setId(3);
         user.ownWallet();
 
         Wallet wallet = user.getWallet();

@@ -7,9 +7,9 @@ import org.example.wallet.Exceptions.CannotOwnWalletWithoutProperUser;
 
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
-@Table(name = "qœusers")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class User {
     private String name;
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Wallet wallet;
 
@@ -34,7 +34,7 @@ public class User {
     private boolean isValidUser() {
         return this.name != null && !this.name.isEmpty() &&
                 this.password != null && !this.password.isEmpty() &&
-                this.id != null && this.wallet == null;
+                this.wallet == null;
     }
 
     public double getBalance() {

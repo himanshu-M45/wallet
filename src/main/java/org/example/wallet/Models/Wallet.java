@@ -5,11 +5,10 @@ import lombok.Getter;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 
 @Entity
-@Table(name = "wallets")
 @Getter
 public class Wallet {
     @Id
-    private Long id;
+    private Integer id;
     private double balance;
 
     protected Wallet() {
