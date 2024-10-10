@@ -8,78 +8,50 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserTest {
     @Test
     void testValidUserInitialization() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
+        User user = new User("John Doe", "password123");
         assertNotNull(user.getName());
         assertNotNull(user.getPassword());
     }
 
     @Test
-    void testInvalidUserInitialization() {
-        User user = new User();
-        user.setName(null);
-        user.setPassword(null);
-        assertNull(user.getName());
-        assertNull(user.getPassword());
+    void testInvalidUserInitializationEmptyNameAndPassword() {
+        assertThrows(IllegalArgumentException.class, () -> new User("", ""));
+    }
+
+    @Test
+    void testInvalidUserInitializationNullNameAndPassword() {
+        assertThrows(IllegalArgumentException.class, () -> new User(null, null));
     }
 
     @Test
     void testGetNameOfUser() {
-        User user = new User();
-        user.setName("John Doe");
-        assertEquals("John Doe", user.getName());
+        User user = new User("Alice Smith", "alicePass");
+        assertEquals("Alice Smith", user.getName());
     }
 
     @Test
     void testGetNullUserId() {
-        User user = new User();
+        User user = new User("Bob Johnson", "bobPass");
         assertNull(user.getId());
     }
 
     @Test
     void testTwoValidUsersShouldNotBeSame() {
-        User user1 = new User();
-        user1.setName("John Doe");
-        user1.setPassword("password123");
-
-        User user2 = new User();
-        user2.setName("John Doe");
-        user2.setPassword("password123");
+        User user1 = new User("Charlie Brown", "charliePass");
+        User user2 = new User("Diana Prince", "dianaPass4");
 
         assertNotEquals(user1, user2);
     }
 
     @Test
-    void testTwoInvalidUsersShouldNotBeSame() {
-        User firstUser = new User();
-        User secondUser = new User();
-
-        assertNotEquals(firstUser, secondUser);
-    }
-
-    @Test
-    void testNullWalletWhenUserIsDummy() {
-        User user = new User();
-        assertNull(user.getWallet());
-    }
-
-    @Test
     void testWalletNotNullWhenUserIsNotDummy() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
-        user.ownWallet();
+        User user = new User("Hannah Montana", "hannahPass8");
         assertNotNull(user.getWallet());
     }
 
     @Test
     void testUserWalletBalance() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
-
-        user.ownWallet();
+        User user = new User("Ian Somerhalder", "ianPass9");
         Wallet wallet = user.getWallet();
         wallet.deposit(100);
 
@@ -88,47 +60,29 @@ public class UserTest {
 
     @Test
     void testUserWalletAdd0Balance() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
-
-        user.ownWallet();
+        User user = new User("Jessica Jones", "jessicaPass10");
         Wallet wallet = user.getWallet();
-
         assertThrows(IllegalArgumentException.class, () -> wallet.deposit(0));
     }
 
     @Test
     void testUserWalletAddNegativeBalance() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
-
-        user.ownWallet();
+        User user = new User("Kevin Hart", "kevinPass11");
         Wallet wallet = user.getWallet();
-
         assertThrows(IllegalArgumentException.class, () -> wallet.deposit(-100));
     }
 
     @Test
     void testUserWalletWithdraw0Balance() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
-
-        user.ownWallet();
+        User user = new User("Laura Palmer", "lauraPass12");
         Wallet wallet = user.getWallet();
-
         assertThrows(IllegalArgumentException.class, () -> wallet.withdraw(0));
     }
 
     @Test
     void testUserWalletWithdraw100WhileBalanceIs50() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
+        User user = new User("Michael Scott", "michaelPass13");
 
-        user.ownWallet();
         Wallet wallet = user.getWallet();
         wallet.deposit(50);
 
@@ -137,11 +91,8 @@ public class UserTest {
 
     @Test
     void testUserWalletWithdraw150From550AndUpdateBalance350() {
-        User user = new User();
-        user.setName("John Doe");
-        user.setPassword("password123");
+        User user = new User("Nancy Drew", "nancyPass14");
 
-        user.ownWallet();
         Wallet wallet = user.getWallet();
         wallet.deposit(500);
         wallet.withdraw(150);
