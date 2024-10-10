@@ -27,10 +27,6 @@ public class User {
     public User() {
     }
 
-    public Wallet getWallet() {
-        return wallet;
-    }
-
     public double getBalance() {
         return wallet.getBalance();
     }

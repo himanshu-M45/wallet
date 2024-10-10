@@ -6,8 +6,7 @@ import org.example.wallet.Repositorys.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Optional;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,26 +53,37 @@ class UserServiceTest {
 
     @Test
     public void testFindById() {
-        Optional<User> retrieveUser = userService.findById(1);
-        assertNotNull(retrieveUser);
+        User user = userService.findById(1);
+        assertNotNull(user);
     }
 
     @Test
     void testGetBalanceOfStoredUser() {
-        Optional<User> userOptional = userService.findById(1);
-        assertTrue(userOptional.isPresent(), "User should be present");
-        User user = userOptional.get();
+        User user = userService.findById(1);
         double balance = user.getBalance();
         assertEquals(0, balance);
     }
 
     @Test
     void testGetBalanceOfStoredUserAndUpdateBalance() {
-        Optional<User> userOptional = userService.findById(1);
-        assertTrue(userOptional.isPresent(), "User should be present");
-        User user = userOptional.get();
+        User user = userService.findById(1);
         assertEquals(0, user.getBalance());
         user.deposit(100);
         assertEquals(100, user.getBalance());
+    }
+
+    @Test
+    void testFetchUserWallet() {
+        User user = userService.findById(1);
+        Wallet wallet = userService.fetchUserWallet(1);
+
+        assertNotNull(wallet);
+        assertEquals(100, wallet.getBalance());
+        assertEquals(100, user.getBalance());
+    }
+
+    @Test
+    void testFetchUserWalletWithUserId4() {
+        assertThrows(InvalidDataAccessApiUsageException.class, () -> userService.fetchUserWallet(5));
     }
 }
