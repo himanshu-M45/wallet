@@ -2,14 +2,22 @@ package org.example.wallet.Models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 
 @Entity
+@Table(name = "wallet")
 @Getter
+@Setter
 public class Wallet {
     @Id
     private Integer id;
     private double balance;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private User user;
 
     public Wallet() {
         this.balance = 0.0;

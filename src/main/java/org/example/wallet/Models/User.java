@@ -14,7 +14,7 @@ public class User {
     private String name;
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Wallet wallet;
 
@@ -25,6 +25,7 @@ public class User {
         this.name = name;
         this.password = password;
         this.wallet = new Wallet();
+//        this.wallet.setUser(this);
     }
 
     public User() {
