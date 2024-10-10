@@ -56,9 +56,10 @@ class UserServiceTest {
     }
 
     @Test
-    public void testFindByUsername() {
-        User user = new User("Alice Smith", "alicePass");
-        User retrieveUser = userService.findByUsername("Alice Smith");
+    public void testFindUserById() {
+        User retrieveUser = userService.findUserById(1);
         assertNotNull(retrieveUser);
+        assertEquals("John Doe", retrieveUser.getName());
+        assertEquals("password123", retrieveUser.getPassword());
     }
 }

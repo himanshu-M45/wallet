@@ -25,7 +25,7 @@ public class User {
         this.name = name;
         this.password = password;
         this.wallet = new Wallet();
-//        this.wallet.setUser(this);
+        this.wallet.setUser(this);
     }
 
     public User() {
