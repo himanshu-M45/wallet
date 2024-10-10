@@ -1,12 +1,10 @@
 package org.example.wallet.Models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 
 
 @Entity
 @Table(name = "users")
-@Getter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +12,7 @@ public class User {
     private String name;
     private String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade = CascadeType.ALL)
     private Wallet wallet;
 
     public User(String name, String password) {
@@ -25,9 +22,28 @@ public class User {
         this.name = name;
         this.password = password;
         this.wallet = new Wallet();
-        this.wallet.setUser(this);
     }
 
     public User() {
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public double getBalance() {
+        return wallet.getBalance();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void deposit(double amount) {
+        wallet.deposit(amount);
+    }
+
+    public void withdraw(double amount) {
+        wallet.withdraw(amount);
     }
 }

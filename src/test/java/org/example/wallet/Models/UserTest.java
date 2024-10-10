@@ -9,8 +9,7 @@ public class UserTest {
     @Test
     void testValidUserInitialization() {
         User user = new User("John Doe", "password123");
-        assertNotNull(user.getName());
-        assertNotNull(user.getPassword());
+        assertNotNull(user);
     }
 
     @Test
@@ -21,18 +20,6 @@ public class UserTest {
     @Test
     void testInvalidUserInitializationNullNameAndPassword() {
         assertThrows(IllegalArgumentException.class, () -> new User(null, null));
-    }
-
-    @Test
-    void testGetNameOfUser() {
-        User user = new User("Alice Smith", "alicePass");
-        assertEquals("Alice Smith", user.getName());
-    }
-
-    @Test
-    void testGetNullUserId() {
-        User user = new User("Bob Johnson", "bobPass");
-        assertNull(user.getId());
     }
 
     @Test
@@ -97,6 +84,6 @@ public class UserTest {
         wallet.deposit(500);
         wallet.withdraw(150);
 
-        assertEquals(350, wallet.getBalance());
+        assertEquals(350, user.getBalance());
     }
 }

@@ -1,27 +1,17 @@
 package org.example.wallet.Models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 
 @Entity
-@Table(name = "wallet")
-@Getter
-@Setter
+@Table(name = "wallets")
 public class Wallet {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private double balance;
+    private double balance = 0.0;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
-    private User user;
-
-    public Wallet() {
-        this.balance = 0.0;
-    }
+    protected Wallet() {}
 
     void deposit(double amount) {
         if (amount <= 0) {
@@ -38,5 +28,9 @@ public class Wallet {
             throw new InsufficientBalanceException("Insufficient balance");
         }
         this.balance -= amount;
+    }
+
+    double getBalance() {
+        return balance;
     }
 }

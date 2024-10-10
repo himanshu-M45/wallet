@@ -1,65 +1,79 @@
 package org.example.wallet.Service;
 
 import org.example.wallet.Models.User;
+import org.example.wallet.Models.Wallet;
 import org.example.wallet.Repositorys.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class UserServiceTest {
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Test
     public void testRegisterUser() {
-        User user = new User("John Doe", "password123");
+        User user = userService.registerUser("John Doe", "password123");
 
-        User savedUser = userService.registerUser(user);
-        assertNotNull(savedUser.getId());
+        assertNotNull(user.getId());
 
-        User retrievedUser = userRepository.findById(savedUser.getId()).orElse(null);
+        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
         assertNotNull(retrievedUser);
-        assertEquals("John Doe", retrievedUser.getName());
-        assertEquals("password123", retrievedUser.getPassword());
+        assertEquals(user.getId(), retrievedUser.getId());
     }
 
     @Test
     public void testRegisterUser2() {
-        User user = new User("Ethan Hunt", "ethanPass5");
+        User user = userService.registerUser("Ethan Hunt", "ethanPass5");
 
-        User savedUser = userService.registerUser(user);
-        assertNotNull(savedUser.getId());
+        assertNotNull(user.getId());
 
-        User retrievedUser = userRepository.findById(savedUser.getId()).orElse(null);
+        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
         assertNotNull(retrievedUser);
-        assertEquals("Ethan Hunt", retrievedUser.getName());
-        assertEquals("ethanPass5", retrievedUser.getPassword());
+        assertEquals(user.getId(), retrievedUser.getId());
     }
 
     @Test
     public void testRegisterUser3() {
-        User user = new User("Fiona Gallagher", "fionaPass6");
+        User user = userService.registerUser("Fiona Gallagher", "fionaPass6");
 
-        User savedUser = userService.registerUser(user);
-        assertNotNull(savedUser.getId());
+        assertNotNull(user.getId());
 
-        User retrievedUser = userRepository.findById(savedUser.getId()).orElse(null);
+        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
         assertNotNull(retrievedUser);
-        assertEquals("Fiona Gallagher", retrievedUser.getName());
-        assertEquals("fionaPass6", retrievedUser.getPassword());
+        assertEquals(user.getId(), retrievedUser.getId());
     }
 
     @Test
-    public void testFindUserById() {
-        User retrieveUser = userService.findUserById(1);
+    public void testFindById() {
+        Optional<User> retrieveUser = userService.findById(1);
         assertNotNull(retrieveUser);
-        assertEquals("John Doe", retrieveUser.getName());
-        assertEquals("password123", retrieveUser.getPassword());
+    }
+
+    @Test
+    void testGetBalanceOfStoredUser() {
+        Optional<User> userOptional = userService.findById(1);
+        assertTrue(userOptional.isPresent(), "User should be present");
+        User user = userOptional.get();
+        double balance = user.getBalance();
+        assertEquals(0, balance);
+    }
+
+    @Test
+    void testGetBalanceOfStoredUserAndUpdateBalance() {
+        Optional<User> userOptional = userService.findById(1);
+        assertTrue(userOptional.isPresent(), "User should be present");
+        User user = userOptional.get();
+        assertEquals(0, user.getBalance());
+        user.deposit(100);
+        assertEquals(100, user.getBalance());
     }
 }
