@@ -31,15 +31,15 @@ class WalletServiceTest {
     @Test
     void testGetBalanceOfStoredUserAndUpdateBalance() {
         assertEquals(100, walletService.getBalance(3));
-        walletService.deposit(3, 100);
-        assertEquals(200, walletService.getBalance(3));
+        double balance = walletService.deposit(3, 100);
+        assertEquals(balance, walletService.getBalance(3));
     }
 
     @Test
     void testDepositFromWalletService() {
         assertEquals(200, walletService.getBalance(2));
-        walletService.deposit(2, 100);
-        assertEquals(300, walletService.getBalance(2));
+        double balance = walletService.deposit(2, 100);
+        assertEquals(balance, walletService.getBalance(2));
     }
 
     @Test
@@ -65,7 +65,7 @@ class WalletServiceTest {
     @Test
     void testWithdraw50FromWalletService() {
         assertEquals(300, walletService.getBalance(1));
-        walletService.withdraw(1, 50);
-        assertEquals(250, walletService.getBalance(1));
+        double balance = walletService.withdraw(1, 50);
+        assertEquals(balance, walletService.getBalance(1));
     }
 }

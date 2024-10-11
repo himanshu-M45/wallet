@@ -35,11 +35,11 @@ public class User {
         return id;
     }
 
-    public void deposit(double amount) {
-        wallet.deposit(amount);
+    public Double deposit(double amount) {
+        return wallet.deposit(amount);
     }
 
-    public void withdraw(double amount) {
-        wallet.withdraw(amount);
+    public Double withdraw(double amount) {
+        return wallet.withdraw(amount);
     }
 }

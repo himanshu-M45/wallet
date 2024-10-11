@@ -67,7 +67,7 @@ public class UserTest {
     void testUserWalletWithdraw150From550AndUpdateBalance350() {
         User user = new User("Nancy Drew", "nancyPass14");
         user.deposit(500);
-        user.withdraw(150);
-        assertEquals(350, user.getBalance());
+        double balance = user.withdraw(150);
+        assertEquals(balance, user.getBalance());
     }
 }

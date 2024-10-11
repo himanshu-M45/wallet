@@ -9,18 +9,19 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private double balance = 0.0;
+    private Double balance = 0.0;
 
     protected Wallet() {}
 
-    void deposit(double amount) {
+    Double deposit(double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Deposit amount cannot be negative or zero");
         }
         this.balance += amount;
+        return this.balance;
     }
 
-    void withdraw(double amount) {
+    Double withdraw(double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Withdrawal amount cannot be negative or zero");
         }
@@ -28,6 +29,7 @@ public class Wallet {
             throw new InsufficientBalanceException("Insufficient balance");
         }
         this.balance -= amount;
+        return this.balance;
     }
 
     double getBalance() {

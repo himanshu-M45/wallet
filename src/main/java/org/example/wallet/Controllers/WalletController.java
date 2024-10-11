@@ -1,41 +1,46 @@
 package org.example.wallet.Controllers;
 
-import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/wallet")
-@CrossOrigin
 public class WalletController {
     @Autowired
     private WalletService walletService;
 
     @PostMapping("/deposit")
-    public ResponseEntity<Void> deposit(@RequestParam int userId, @RequestParam double amount) {
+    public ResponseEntity<Double> deposit(@RequestBody Map<String, Object> depositMap) {
         try {
-            walletService.deposit(userId, amount);
-            return ResponseEntity.ok().build();
+            int userId = (Integer) depositMap.get("userId");
+            double amount = (Double) depositMap.get("amount");
+            double balance = walletService.deposit(userId, amount);
+            return ResponseEntity.ok(balance);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<Void> withdraw(@RequestParam int userId, @RequestParam double amount) {
+    public ResponseEntity<Double> withdraw(@RequestBody Map<String, Object> withdrawMap) {
         try {
-            walletService.withdraw(userId, amount);
-            return ResponseEntity.ok().build();
+            int userId = (Integer) withdrawMap.get("userId");
+            double amount = (Double) withdrawMap.get("amount");
+            double balance = walletService.withdraw(userId, amount);
+            return ResponseEntity.ok(balance);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
 
     @GetMapping("/balance")
-    public ResponseEntity<Double> getBalance(@RequestParam int userId) {
+    public ResponseEntity<Double> balance(@RequestBody Map<String, Object> balanceMap) {
         try {
+            int userId = (Integer) balanceMap.get("userId");
             double balance = walletService.getBalance(userId);
             return ResponseEntity.ok(balance);
         } catch (Exception e) {
