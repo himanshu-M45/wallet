@@ -30,7 +30,7 @@ public class Wallet {
         this.balance -= amount;
     }
 
-    public double getBalance() {
+    double getBalance() {
         return balance;
     }
 }

@@ -1,12 +1,10 @@
 package org.example.wallet.Service;
 
 import org.example.wallet.Models.User;
-import org.example.wallet.Models.Wallet;
 import org.example.wallet.Repositorys.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,6 +50,17 @@ class UserServiceTest {
     }
 
     @Test
+    public void testRegisterUser4() {
+        User user = userService.registerUser("Ian Somerhalder", "ianPass9");
+
+        assertNotNull(user.getId());
+
+        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
+        assertNotNull(retrievedUser);
+        assertEquals(user.getId(), retrievedUser.getId());
+    }
+
+    @Test
     public void testFindById() {
         User user = userService.findById(1);
         assertNotNull(user);
@@ -70,20 +79,5 @@ class UserServiceTest {
         assertEquals(0, user.getBalance());
         user.deposit(100);
         assertEquals(100, user.getBalance());
-    }
-
-    @Test
-    void testFetchUserWallet() {
-        User user = userService.findById(1);
-        Wallet wallet = userService.fetchUserWallet(1);
-
-        assertNotNull(wallet);
-        assertEquals(100, wallet.getBalance());
-        assertEquals(100, user.getBalance());
-    }
-
-    @Test
-    void testFetchUserWalletWithUserId4() {
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> userService.fetchUserWallet(5));
     }
 }

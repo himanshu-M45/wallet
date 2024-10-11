@@ -30,54 +30,44 @@ public class UserTest {
         assertNotEquals(user1, user2);
     }
 
-//    @Test
-//    void testUserWalletBalance() {
-//        User user = new User("Ian Somerhalder", "ianPass9");
-//        Wallet wallet = user.getWallet();
-//        wallet.deposit(100);
-//
-//        assertEquals(100, wallet.getBalance());
-//    }
-//
-//    @Test
-//    void testUserWalletAdd0Balance() {
-//        User user = new User("Jessica Jones", "jessicaPass10");
-//        Wallet wallet = user.getWallet();
-//        assertThrows(IllegalArgumentException.class, () -> wallet.deposit(0));
-//    }
-//
-//    @Test
-//    void testUserWalletAddNegativeBalance() {
-//        User user = new User("Kevin Hart", "kevinPass11");
-//        Wallet wallet = user.getWallet();
-//        assertThrows(IllegalArgumentException.class, () -> wallet.deposit(-100));
-//    }
-//
-//    @Test
-//    void testUserWalletWithdraw0Balance() {
-//        User user = new User("Laura Palmer", "lauraPass12");
-//        Wallet wallet = user.getWallet();
-//        assertThrows(IllegalArgumentException.class, () -> wallet.withdraw(0));
-//    }
-//
-//    @Test
-//    void testUserWalletWithdraw100WhileBalanceIs50() {
-//        User user = new User("Michael Scott", "michaelPass13");
-//
-//        Wallet wallet = user.getWallet();
-//        wallet.deposit(50);
-//
-//        assertThrows(InsufficientBalanceException.class, () -> wallet.withdraw(100));
-//    }
-//
-//    @Test
-//    void testUserWalletWithdraw150From550AndUpdateBalance350() {
-//        User user = new User("Nancy Drew", "nancyPass14");
-//
-//        Wallet wallet = user.getWallet();
-//        wallet.deposit(500);
-//        wallet.withdraw(150);
-//
-//        assertEquals(350, wallet.getBalance());
-//    }
+    @Test
+    void testUserWalletBalance() {
+        User user = new User("Ian Somerhalder", "ianPass9");
+        user.deposit(100);
+
+        assertEquals(100, user.getBalance());
+    }
+
+    @Test
+    void testUserWalletAdd0Balance() {
+        User user = new User("Jessica Jones", "jessicaPass10");
+        assertThrows(IllegalArgumentException.class, () -> user.deposit(0));
+    }
+
+    @Test
+    void testUserWalletAddNegativeBalance() {
+        User user = new User("Kevin Hart", "kevinPass11");
+        assertThrows(IllegalArgumentException.class, () -> user.deposit(-100));
+    }
+
+    @Test
+    void testUserWalletWithdraw0Balance() {
+        User user = new User("Laura Palmer", "lauraPass12");
+        assertThrows(IllegalArgumentException.class, () -> user.withdraw(0));
+    }
+
+    @Test
+    void testUserWalletWithdraw100WhileBalanceIs50() {
+        User user = new User("Michael Scott", "michaelPass13");
+        user.deposit(50);
+        assertThrows(InsufficientBalanceException.class, () -> user.withdraw(100));
+    }
+
+    @Test
+    void testUserWalletWithdraw150From550AndUpdateBalance350() {
+        User user = new User("Nancy Drew", "nancyPass14");
+        user.deposit(500);
+        user.withdraw(150);
+        assertEquals(350, user.getBalance());
+    }
 }
