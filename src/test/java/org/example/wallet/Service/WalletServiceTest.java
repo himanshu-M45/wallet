@@ -1,6 +1,7 @@
 package org.example.wallet.Service;
 
 import org.example.wallet.Exceptions.InsufficientBalanceException;
+import org.example.wallet.Exceptions.UserIsNotRegisteredException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class WalletServiceTest {
     @Autowired
     private WalletService walletService;
+
+    @Test
+    void testGetBalanceOfNonStoredUser() {
+        assertThrows(UserIsNotRegisteredException.class, () -> walletService.getBalance(0));
+    }
+
+    @Test
+    void testDepositToNonStoredUser() {
+        assertThrows(UserIsNotRegisteredException.class, () -> walletService.deposit(0, 100));
+    }
+
+    @Test
+    void testWithdrawFromNonStoredUser() {
+        assertThrows(UserIsNotRegisteredException.class, () -> walletService.withdraw(0, 100));
+    }
+
     @Test
     void testGetBalanceOfStoredUserAndUpdateBalance() {
         assertEquals(100, walletService.getBalance(3));
