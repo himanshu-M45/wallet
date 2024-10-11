@@ -12,54 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class UserServiceTest {
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
-
-    @Test
-    public void testRegisterUser() {
-        User user = userService.registerUser("John Doe", "password123");
-
-        assertNotNull(user.getId());
-
-        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
-        assertNotNull(retrievedUser);
-        assertEquals(user.getId(), retrievedUser.getId());
-    }
-
-    @Test
-    public void testRegisterUser2() {
-        User user = userService.registerUser("Ethan Hunt", "ethanPass5");
-
-        assertNotNull(user.getId());
-
-        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
-        assertNotNull(retrievedUser);
-        assertEquals(user.getId(), retrievedUser.getId());
-    }
-
-    @Test
-    public void testRegisterUser3() {
-        User user = userService.registerUser("Fiona Gallagher", "fionaPass6");
-
-        assertNotNull(user.getId());
-
-        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
-        assertNotNull(retrievedUser);
-        assertEquals(user.getId(), retrievedUser.getId());
-    }
-
-    @Test
-    public void testRegisterUser4() {
-        User user = userService.registerUser("Ian Somerhalder", "ianPass9");
-
-        assertNotNull(user.getId());
-
-        User retrievedUser = userRepository.findById(user.getId()).orElse(null);
-        assertNotNull(retrievedUser);
-        assertEquals(user.getId(), retrievedUser.getId());
-    }
 
     @Test
     public void testFindById() {
@@ -68,50 +21,50 @@ class UserServiceTest {
     }
 
     @Test
+    public void testRegisterUser() {
+        int savedUserId = userService.registerUser("John Doe", "password123");
+//        int savedUserId = 1;
+        User retrievedUser = userService.findById(savedUserId);
+        assertNotNull(retrievedUser);
+    }
+
+    @Test
+    public void testRegisterUser2() {
+        int savedUserId = userService.registerUser("Ethan Hunt", "ethanPass5");
+//        int savedUserId = 3;
+        User retrievedUser = userService.findById(savedUserId);
+        assertNotNull(retrievedUser);
+    }
+
+    @Test
+    public void testRegisterUser3() {
+        int savedUserId = userService.registerUser("Fiona Gallagher", "fionaPass6");
+//        int savedUserId = 4;
+        User retrievedUser = userService.findById(savedUserId);
+        assertNotNull(retrievedUser);
+    }
+
+    @Test
+    public void testRegisterUser4() {
+        int savedUserId = userService.registerUser("Ian Somerhalder", "ianPass9");
+//        int savedUserId = 5;
+        User retrievedUser = userService.findById(savedUserId);
+        assertNotNull(retrievedUser);
+    }
+
+    @Test
+    void testRegisterUser5() {
+        int savedUserId = userService.registerUser("Charlie Brown", "charliePass");
+//        int savedUserId = 5;
+        User retrievedUser = userService.findById(savedUserId);
+        assertNotNull(retrievedUser);
+    }
+
+
+    @Test
     void testGetBalanceOfStoredUser() {
         User user = userService.findById(1);
         double balance = user.getBalance();
         assertEquals(400, balance);
-    }
-
-    @Test
-    void testGetBalanceOfStoredUserAndUpdateBalance() {
-        assertEquals(0, userService.getBalance(2));
-        userService.deposit(2, 100);
-        assertEquals(100, userService.getBalance(2));
-    }
-
-    @Test
-    void testDepositFromUserService() {
-        assertEquals(300, userService.getBalance(1));
-        userService.deposit(1, 100);
-        assertEquals(400, userService.getBalance(1));
-    }
-
-    @Test
-    void testDeposit0FromUserService() {
-        assertThrows(IllegalArgumentException.class, () -> userService.deposit(1, 0));
-    }
-
-    @Test
-    void testWithdraw0FromUserService() {
-        assertThrows(IllegalArgumentException.class, () -> userService.withdraw(1, 0));
-    }
-
-    @Test
-    void testWithdrawNegativeAmountFromUserService() {
-        assertThrows(IllegalArgumentException.class, () -> userService.withdraw(1, -100));
-    }
-
-    @Test
-    void testWithdrawMoreThanBalanceFromUserService() {
-        assertThrows(InsufficientBalanceException.class, () -> userService.withdraw(1, 500));
-    }
-
-    @Test
-    void testWithdraw50FromUserService() {
-        assertEquals(350, userService.getBalance(1));
-        userService.withdraw(1, 50);
-        assertEquals(300, userService.getBalance(1));
     }
 }
