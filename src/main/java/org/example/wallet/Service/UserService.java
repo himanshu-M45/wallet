@@ -13,8 +13,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public int registerUser(String name, String password) {
-        User user = new User(name, password);
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(new User(name, password));
         try {
             Field idField = User.class.getDeclaredField("id");
             idField.setAccessible(true);

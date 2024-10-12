@@ -31,10 +31,6 @@ public class User {
         return wallet.getBalance();
     }
 
-    public Integer getId() {
-        return id;
-    }
-
     public Double deposit(double amount) {
         return wallet.deposit(amount);
     }

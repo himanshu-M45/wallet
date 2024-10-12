@@ -38,7 +38,7 @@ public class WalletControllerTest {
     void testDeposit() throws Exception {
         when(walletService.deposit(anyInt(), anyDouble())).thenReturn(200.0);
 
-        mockMvc.perform(post("/wallet/deposit")
+        mockMvc.perform(post("/wallet/1/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1,\"amount\":100.0}"))
                 .andExpect(status().isOk())
@@ -49,7 +49,7 @@ public class WalletControllerTest {
     void testDepositFail() throws Exception {
         when(walletService.deposit(anyInt(), anyDouble())).thenThrow(new RuntimeException("Deposit failed"));
 
-        mockMvc.perform(post("/wallet/deposit")
+        mockMvc.perform(post("/wallet/2/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1,\"amount\":100.0}"))
                 .andExpect(status().isInternalServerError());
@@ -59,7 +59,7 @@ public class WalletControllerTest {
     void testWithdraw() throws Exception {
         when(walletService.withdraw(anyInt(), anyDouble())).thenReturn(150.0);
 
-        mockMvc.perform(post("/wallet/withdraw")
+        mockMvc.perform(post("/wallet/4/withdraw")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1,\"amount\":50.0}"))
                 .andExpect(status().isOk())
@@ -70,7 +70,7 @@ public class WalletControllerTest {
     void testWithdrawFail() throws Exception {
         when(walletService.withdraw(anyInt(), anyDouble())).thenThrow(new RuntimeException("Withdraw failed"));
 
-        mockMvc.perform(post("/wallet/withdraw")
+        mockMvc.perform(post("/wallet/2/withdraw")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1,\"amount\":50.0}"))
                 .andExpect(status().isInternalServerError());
@@ -80,7 +80,7 @@ public class WalletControllerTest {
     void testBalance() throws Exception {
         when(walletService.getBalance(anyInt())).thenReturn(300.0);
 
-        mockMvc.perform(get("/wallet/balance")
+        mockMvc.perform(get("/wallet/2/balance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1}"))
                 .andExpect(status().isOk())
@@ -91,7 +91,7 @@ public class WalletControllerTest {
     void testBalanceFail() throws Exception {
         when(walletService.getBalance(anyInt())).thenThrow(new RuntimeException("Balance retrieval failed"));
 
-        mockMvc.perform(get("/wallet/balance")
+        mockMvc.perform(get("/wallet/7/balance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1}"))
                 .andExpect(status().isInternalServerError());
