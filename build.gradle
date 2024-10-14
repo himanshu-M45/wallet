@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 	runtimeOnly 'com.h2database:h2'
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {

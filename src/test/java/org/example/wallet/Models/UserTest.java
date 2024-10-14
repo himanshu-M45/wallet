@@ -1,6 +1,7 @@
 package org.example.wallet.Models;
 
 import org.example.wallet.Exceptions.InsufficientBalanceException;
+import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,19 +42,19 @@ public class UserTest {
     @Test
     void testUserWalletAdd0Balance() {
         User user = new User("Jessica Jones", "jessicaPass10");
-        assertThrows(IllegalArgumentException.class, () -> user.deposit(0));
+        assertThrows(InvalidAmountEnteredException.class, () -> user.deposit(0));
     }
 
     @Test
     void testUserWalletAddNegativeBalance() {
         User user = new User("Kevin Hart", "kevinPass11");
-        assertThrows(IllegalArgumentException.class, () -> user.deposit(-100));
+        assertThrows(InvalidAmountEnteredException.class, () -> user.deposit(-100));
     }
 
     @Test
     void testUserWalletWithdraw0Balance() {
         User user = new User("Laura Palmer", "lauraPass12");
-        assertThrows(IllegalArgumentException.class, () -> user.withdraw(0));
+        assertThrows(InvalidAmountEnteredException.class, () -> user.withdraw(0));
     }
 
     @Test
