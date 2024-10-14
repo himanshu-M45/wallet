@@ -25,8 +25,4 @@ public class User {
 
     public User() {
     }
-
-    public double getBalance() {
-        return wallet.getBalance();
-    }
 }

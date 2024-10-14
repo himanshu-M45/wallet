@@ -1,12 +1,9 @@
 package org.example.wallet.Service;
 
-//import org.example.wallet.Exceptions.UserAuthenitcationFailed;
-//import org.example.wallet.Exceptions.UserIsNotRegisteredException;
 import org.example.wallet.Exceptions.WalletNotFoundException;
 import org.example.wallet.Models.User;
 import org.example.wallet.Repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -16,11 +13,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-//    @Autowired
-//    private BCryptPasswordEncoder passwordEncoder;
-
     public int register(String name, String password) {
-//        String encodedPassword = passwordEncoder.encode(password);
         User savedUser = userRepository.save(new User(name, password));
         try {
             Field idField = User.class.getDeclaredField("id");
