@@ -1,10 +1,12 @@
 package org.example.wallet.Service;
 
-import jakarta.transaction.Transactional;
-import org.example.wallet.Exceptions.UserIsNotRegisteredException;
+//import org.example.wallet.Exceptions.UserAuthenitcationFailed;
+//import org.example.wallet.Exceptions.UserIsNotRegisteredException;
+import org.example.wallet.Exceptions.WalletNotFoundException;
 import org.example.wallet.Models.User;
 import org.example.wallet.Repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -14,7 +16,11 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public int registerUser(String name, String password) {
+//    @Autowired
+//    private BCryptPasswordEncoder passwordEncoder;
+
+    public int register(String name, String password) {
+//        String encodedPassword = passwordEncoder.encode(password);
         User savedUser = userRepository.save(new User(name, password));
         try {
             Field idField = User.class.getDeclaredField("id");
@@ -29,20 +35,36 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    @Transactional
-    public Double deposit(int userId, double amount) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserIsNotRegisteredException("User not found"));
-        return user.deposit(amount);
+    public int findWalletId(int userId) {
+        try {
+            return userRepository.findWalletIdByUserId(userId);
+        } catch (NullPointerException e) {
+            throw new WalletNotFoundException("Wallet not found for user with id " + userId);
+        }
     }
 
-    @Transactional
-    public Double withdraw(int userId, double amount) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserIsNotRegisteredException("User not found"));
-        return user.withdraw(amount);
-    }
-
-    public double getBalance(int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserIsNotRegisteredException("User not found"));
-        return user.getBalance();
-    }
+//    public boolean authenticateUser(int userId, String password){
+//        try {
+//            String encodedPassword = fetchEncodedPassword(userId);
+//            return passwordEncoder.matches(password, encodedPassword);
+//        } catch (UserIsNotRegisteredException e) {
+//            throw new UserIsNotRegisteredException("User not found");
+//        } catch (Exception e) {
+//            throw new UserAuthenitcationFailed("Failed to authenticate user");
+//        }
+//    }
+//
+//    private String fetchEncodedPassword(int userId) {
+//        User user = findById(userId);
+//        if (user != null) {
+//            try {
+//                Field passwordField = User.class.getDeclaredField("password");
+//                passwordField.setAccessible(true);
+//                return (String) passwordField.get(user);
+//            } catch (NoSuchFieldException | IllegalAccessException e) {
+//                throw new RuntimeException("Failed to retrieve user password", e);
+//            }
+//        }
+//        throw new UserIsNotRegisteredException("User not found");
+//    }
 }

@@ -29,12 +29,4 @@ public class User {
     public double getBalance() {
         return wallet.getBalance();
     }
-
-    public Double deposit(double amount) {
-        return wallet.deposit(amount);
-    }
-
-    public Double withdraw(double amount) {
-        return wallet.withdraw(amount);
-    }
 }

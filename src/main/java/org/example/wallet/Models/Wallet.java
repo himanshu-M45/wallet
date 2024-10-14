@@ -14,7 +14,7 @@ public class Wallet {
 
     protected Wallet() {}
 
-    Double deposit(double amount) {
+    public Double deposit(double amount) {
         if (amount <= 0) {
             throw new InvalidAmountEnteredException("Deposit amount cannot be negative or zero");
         }
@@ -22,7 +22,7 @@ public class Wallet {
         return this.balance;
     }
 
-    Double withdraw(double amount) {
+    public Double withdrawal(double amount) {
         if (amount <= 0) {
             throw new InvalidAmountEnteredException("Withdrawal amount cannot be negative or zero");
         }
@@ -33,7 +33,7 @@ public class Wallet {
         return this.balance;
     }
 
-    double getBalance() {
+    public double getBalance() {
         return balance;
     }
 }

@@ -33,30 +33,30 @@ class WalletTest {
     }
 
     @Test
-    void testWithdraw() {
+    void testWithdrawal() {
         Wallet wallet = new Wallet();
         wallet.deposit(100.0);
-        wallet.withdraw(50.0);
+        wallet.withdrawal(50.0);
         assertEquals(50.0, wallet.getBalance());
     }
 
     @Test
-    void testWithdrawNegativeAmount() {
+    void testWithdrawalNegativeAmount() {
         Wallet wallet = new Wallet();
-        assertThrows(InvalidAmountEnteredException.class, () -> wallet.withdraw(-100.0));
+        assertThrows(InvalidAmountEnteredException.class, () -> wallet.withdrawal(-100.0));
     }
 
     @Test
-    void testWithdrawZeroAmount() {
+    void testWithdrawalZeroAmount() {
         Wallet wallet = new Wallet();
-        assertThrows(InvalidAmountEnteredException.class, () -> wallet.withdraw(0.0));
+        assertThrows(InvalidAmountEnteredException.class, () -> wallet.withdrawal(0.0));
     }
 
     @Test
-    void testWithdrawInsufficientBalance() {
+    void testWithdrawalInsufficientGetBalance() {
         Wallet wallet = new Wallet();
         wallet.deposit(50.0);
         assertEquals(50.0, wallet.getBalance());
-        assertThrows(InsufficientBalanceException.class, () -> wallet.withdraw(100.0));
+        assertThrows(InsufficientBalanceException.class, () -> wallet.withdrawal(100.0));
     }
 }
