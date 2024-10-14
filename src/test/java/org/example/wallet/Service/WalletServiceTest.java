@@ -3,7 +3,6 @@ package org.example.wallet.Service;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 import org.example.wallet.Exceptions.UserIsNotRegisteredException;
-import org.example.wallet.Models.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +32,7 @@ class WalletServiceTest {
 
     @Test
     void testWithdrawalFromNonStoredUser() {
-        assertThrows(UserIsNotRegisteredException.class, () -> walletService.withdraw(0, 100));
+        assertThrows(UserIsNotRegisteredException.class, () -> walletService.withdrawal(0, 100));
     }
 
     @Test
@@ -57,23 +56,23 @@ class WalletServiceTest {
 
     @Test
     void testWithdrawal0FromUserService() {
-        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdraw(1, 0));
+        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdrawal(1, 0));
     }
 
     @Test
     void testWithdrawalNegativeAmountFromUserService() {
-        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdraw(1, -100));
+        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdrawal(1, -100));
     }
 
     @Test
     void testWithdrawalMoreThanGetBalanceFromUserService() {
-        assertThrows(InsufficientBalanceException.class, () -> walletService.withdraw(1, 500));
+        assertThrows(InsufficientBalanceException.class, () -> walletService.withdrawal(1, 500));
     }
 
     @Test
     void testWithdrawal50FromUserService() {
         assertEquals(750, walletService.getBalance(1));
-        double balance = walletService.withdraw(1, 150);
+        double balance = walletService.withdrawal(1, 150);
         assertEquals(balance, walletService.getBalance(1));
     }
 }

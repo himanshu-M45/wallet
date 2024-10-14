@@ -29,11 +29,29 @@ public class WalletService {
     }
 
     @Transactional
-    public Double withdraw(int userId, double amount) {
+    public Double withdrawal(int userId, double amount) {
         int walletId = userService.findWalletId(userId);
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
             return wallet.withdrawal(amount);
+        }
+        throw new WalletNotFoundException("Wallet not found");
+    }
+
+    @Transactional
+    public String transact(int senderId, int receiverId, double amount) {
+        // retrieve wallet id of sender and receiver
+        int senderWalletId = userService.findWalletId(senderId);
+        int receiverWalletId = userService.findWalletId(receiverId);
+
+        // find wallet by respective id's
+        Wallet senderWallet = findWalletById(senderWalletId);
+        Wallet receiverWallet = findWalletById(receiverWalletId);
+
+        if (senderWallet != null && receiverWallet != null) {
+            senderWallet.withdrawal(amount);
+            receiverWallet.deposit(amount);
+            return "Transaction successful";
         }
         throw new WalletNotFoundException("Wallet not found");
     }
