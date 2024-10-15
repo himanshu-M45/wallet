@@ -1,7 +1,6 @@
 package org.example.wallet.Models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
@@ -9,9 +8,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Getter
     private String username;
-    @Getter
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)

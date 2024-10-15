@@ -43,4 +43,8 @@ public class UserService implements UserDetailsService {
                 Collections.singletonList(() -> "ROLE_USER")
         );
     }
+
+    public boolean isUserAuthorized(Integer userId, Integer walletId) {
+        return userRepository.findWalletIdByUserId(userId).equals(walletId);
+    }
 }
