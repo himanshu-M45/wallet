@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/{walletId}/wallets")
+@RequestMapping("/wallets/{walletId}")
 public class WalletController {
     @Autowired
     private WalletService walletService;

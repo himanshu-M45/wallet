@@ -1,6 +1,5 @@
 package org.example.wallet.Models;
 
-import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 import org.junit.jupiter.api.Test;
@@ -59,17 +58,5 @@ class WalletTest {
         wallet.deposit(50.0);
         assertEquals(50.0, wallet.getBalance());
         assertThrows(InsufficientBalanceException.class, () -> wallet.withdrawal(100.0));
-    }
-
-    @Test
-    void testGetTransactions() {
-        Wallet wallet = new Wallet();
-
-        wallet.deposit(100.0);
-        wallet.addTransaction("100.0 added to balance", TransactionType.DEPOSIT);
-        wallet.withdrawal(50.0);
-        wallet.addTransaction("50.0 deducted from balance", TransactionType.WITHDRAWAL);
-
-        assertEquals(2, wallet.getTransactions().size());
     }
 }

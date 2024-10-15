@@ -1,5 +1,6 @@
 package org.example.wallet.Controllers;
 
+import org.example.wallet.Config.TestSecurityConfig;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 import org.example.wallet.Exceptions.WalletNotFoundException;
@@ -10,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(WalletController.class)
+@Import(TestSecurityConfig.class)
 class WalletControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +40,7 @@ class WalletControllerTest {
     public void testDeposit_Success() throws Exception {
         Mockito.when(walletService.deposit(anyInt(), anyDouble())).thenReturn(200.0);
 
-        mockMvc.perform(post("/1/wallets/deposit")
+        mockMvc.perform(post("/wallets/1/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":100.0}"))
                 .andExpect(status().isOk())
@@ -50,7 +53,7 @@ class WalletControllerTest {
     public void testDeposit_InvalidAmount() throws Exception {
         Mockito.when(walletService.deposit(anyInt(), anyDouble())).thenThrow(new InvalidAmountEnteredException("Deposit amount cannot be negative or zero"));
 
-        mockMvc.perform(post("/2/wallets/deposit")
+        mockMvc.perform(post("/wallets/2/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":2,\"amount\":0.0}"))
                 .andExpect(status().isBadRequest())
@@ -63,7 +66,7 @@ class WalletControllerTest {
     public void testDeposit_WalletNotFound() throws Exception {
         Mockito.when(walletService.deposit(anyInt(), anyDouble())).thenThrow(new WalletNotFoundException("Wallet not found"));
 
-        mockMvc.perform(post("/2/wallets/deposit")
+        mockMvc.perform(post("/wallets/2/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":2,\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
@@ -76,7 +79,7 @@ class WalletControllerTest {
     public void testWithdrawal_Success() throws Exception {
         Mockito.when(walletService.withdrawal(anyInt(), anyDouble())).thenReturn(150.0);
 
-        mockMvc.perform(post("/4/wallets/withdrawal")
+        mockMvc.perform(post("/wallets/4/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":50.0}"))
                 .andExpect(status().isOk())
@@ -89,7 +92,7 @@ class WalletControllerTest {
     public void testWithdrawal_InvalidAmount() throws Exception {
         when(walletService.withdrawal(anyInt(), anyDouble())).thenThrow(new InvalidAmountEnteredException("Withdrawal amount cannot be negative or zero"));
 
-        mockMvc.perform(post("/2/wallets/withdrawal")
+        mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":-50.0}"))
                 .andExpect(status().isBadRequest())
@@ -102,7 +105,7 @@ class WalletControllerTest {
     public void testWithdrawal_InsufficientBalance() throws Exception {
         when(walletService.withdrawal(anyInt(), anyDouble())).thenThrow(new InsufficientBalanceException("Insufficient balance"));
 
-        mockMvc.perform(post("/2/wallets/withdrawal")
+        mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":1000.0}"))
                 .andExpect(status().isBadRequest())
@@ -115,7 +118,7 @@ class WalletControllerTest {
     public void testWithdrawal_WalletNotFound() throws Exception {
         when(walletService.withdrawal(anyInt(), anyDouble())).thenThrow(new WalletNotFoundException("Wallet not found"));
 
-        mockMvc.perform(post("/2/wallets/withdrawal")
+        mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
@@ -128,7 +131,7 @@ class WalletControllerTest {
     public void testGetBalance_Success() throws Exception {
         when(walletService.getBalance(anyInt())).thenReturn(300.0);
 
-        mockMvc.perform(get("/2/wallets/balance")
+        mockMvc.perform(get("/wallets/2/balance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1}"))
                 .andExpect(status().isOk())
@@ -141,7 +144,7 @@ class WalletControllerTest {
     public void testGetBalance_WalletNotFound() throws Exception {
         when(walletService.getBalance(anyInt())).thenThrow(new WalletNotFoundException("Wallet not found"));
 
-        mockMvc.perform(get("/7/wallets/balance")
+        mockMvc.perform(get("/wallets/7/balance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1}"))
                 .andExpect(status().isNotFound())
@@ -154,7 +157,7 @@ class WalletControllerTest {
     void testTransactSuccess() throws Exception {
         Mockito.when(walletService.transact(anyInt(), anyInt(), anyDouble())).thenReturn("Transaction successful");
 
-        mockMvc.perform(post("/1/wallets/transact")
+        mockMvc.perform(post("/wallets/1/transact")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":100.0,\"receiverId\":2}"))
                 .andExpect(status().isOk())
@@ -167,7 +170,7 @@ class WalletControllerTest {
     void testTransactInsufficientFunds() throws Exception {
         Mockito.when(walletService.transact(anyInt(), anyInt(), anyDouble())).thenThrow(new InsufficientBalanceException("Insufficient balance"));
 
-        mockMvc.perform(post("/1/wallets/transact")
+        mockMvc.perform(post("/wallets/1/transact")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":1000.0,\"receiverId\":2}"))
                 .andExpect(status().isBadRequest())
@@ -180,7 +183,7 @@ class WalletControllerTest {
     void testTransactWalletNotFound() throws Exception {
         Mockito.when(walletService.transact(anyInt(), anyInt(), anyDouble())).thenThrow(new WalletNotFoundException("Wallet not found"));
 
-        mockMvc.perform(post("/15/wallets/transact")
+        mockMvc.perform(post("/wallets/15/transact")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":100.0,\"receiverId\":24}"))
                 .andExpect(status().isNotFound())
@@ -193,7 +196,7 @@ class WalletControllerTest {
     void testTransactInvalidAmount() throws Exception {
         Mockito.when(walletService.transact(anyInt(), anyInt(), anyDouble())).thenThrow(new InvalidAmountEnteredException("Invalid amount entered"));
 
-        mockMvc.perform(post("/1/wallets/transact")
+        mockMvc.perform(post("/wallets/1/transact")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":0.0,\"receiverId\":2}"))
                 .andExpect(status().isBadRequest())
@@ -206,7 +209,7 @@ class WalletControllerTest {
     void testTransactGenericException() throws Exception {
         doThrow(new RuntimeException("An error occurred")).when(walletService).transact(anyInt(), anyInt(), anyDouble());
 
-        mockMvc.perform(post("/1/wallets/transact")
+        mockMvc.perform(post("/wallets/1/transact")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":100.0,\"receiverId\":2}"))
                 .andExpect(status().isInternalServerError())
