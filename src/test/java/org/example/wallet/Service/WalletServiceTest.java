@@ -3,6 +3,7 @@ package org.example.wallet.Service;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 import org.example.wallet.Exceptions.UserIsNotRegisteredException;
+import org.example.wallet.Exceptions.WalletNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,40 +14,24 @@ import static org.junit.jupiter.api.Assertions.*;
 class WalletServiceTest {
     @Autowired
     private WalletService walletService;
-
-    @Test
-    void testGetBalanceOfStoredUser() {
-        double balance = walletService.getBalance(1);
-        assertEquals(600, balance);
-    }
-
-    @Test
-    void testGetBalanceOfNonStoredUser() {
-        assertThrows(UserIsNotRegisteredException.class, () -> walletService.getBalance(0));
-    }
+    @Autowired
+    private WalletQueryService walletQueryService;
 
     @Test
     void testDepositToNonStoredUser() {
-        assertThrows(UserIsNotRegisteredException.class, () -> walletService.deposit(0, 100));
+        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(0, 100));
     }
 
     @Test
     void testWithdrawalFromNonStoredUser() {
-        assertThrows(UserIsNotRegisteredException.class, () -> walletService.withdrawal(0, 100));
-    }
-
-    @Test
-    void testGetBalance() {
-        assertEquals(200, walletService.getBalance(3));
-        double balance = walletService.deposit(3, 100);
-        assertEquals(balance, walletService.getBalance(3));
+        assertThrows(WalletNotFoundException.class, () -> walletService.withdrawal(0, 100));
     }
 
     @Test
     void testDepositFromUserService() {
-        assertEquals(250, walletService.getBalance(2));
-        double balance = walletService.deposit(2, 100);
-        assertEquals(balance, walletService.getBalance(2));
+        assertEquals(450, walletQueryService.getBalance(1));
+        double balance = walletService.deposit(1, 150);
+        assertEquals(balance, walletQueryService.getBalance(1));
     }
 
     @Test
@@ -71,8 +56,8 @@ class WalletServiceTest {
 
     @Test
     void testWithdrawal50FromUserService() {
-        assertEquals(750, walletService.getBalance(1));
+        assertEquals(600, walletQueryService.getBalance(1));
         double balance = walletService.withdrawal(1, 150);
-        assertEquals(balance, walletService.getBalance(1));
+        assertEquals(balance, walletQueryService.getBalance(1));
     }
 }

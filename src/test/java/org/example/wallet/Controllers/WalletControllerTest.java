@@ -3,6 +3,7 @@ package org.example.wallet.Controllers;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 import org.example.wallet.Exceptions.WalletNotFoundException;
+import org.example.wallet.Service.WalletQueryService;
 import org.example.wallet.Service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class WalletControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private WalletService walletService;
 
@@ -123,32 +123,6 @@ class WalletControllerTest {
                 .andExpect(content().string("Wallet not found: Wallet not found"));
 
         verify(walletService, times(1)).withdrawal(anyInt(), anyDouble());
-    }
-
-    @Test
-    public void testGetBalance_Success() throws Exception {
-        when(walletService.getBalance(anyInt())).thenReturn(300.0);
-
-        mockMvc.perform(get("/users/2/wallet/balance")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"userId\":1}"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("300.0"));
-
-        verify(walletService, times(1)).getBalance(anyInt());
-    }
-
-    @Test
-    public void testGetBalance_WalletNotFound() throws Exception {
-        when(walletService.getBalance(anyInt())).thenThrow(new WalletNotFoundException("Wallet not found"));
-
-        mockMvc.perform(get("/users/7/wallet/balance")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"userId\":1}"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Wallet not found: Wallet not found"));
-
-        verify(walletService, times(1)).getBalance(anyInt());
     }
 
     @Test

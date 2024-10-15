@@ -63,27 +63,4 @@ public class WalletController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
         }
     }
-
-    @GetMapping("/balance")
-    public ResponseEntity<Object> balance(@PathVariable int userId) {
-        try {
-            double balance = walletService.getBalance(userId);
-            return ResponseEntity.ok(balance);
-        } catch (WalletNotFoundException e) {
-            return ResponseEntity.status(404).body("Wallet not found: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during balance retrieval: " + e.getMessage());
-        }
-    }
-
-    @GetMapping("/transactions")
-    public ResponseEntity<Object> transactions(@PathVariable int userId) {
-        try {
-            return ResponseEntity.ok(walletService.getTransactions(userId));
-        } catch (WalletNotFoundException e) {
-            return ResponseEntity.status(404).body("Wallet not found: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during transaction retrieval: " + e.getMessage());
-        }
-    }
 }

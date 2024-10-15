@@ -10,19 +10,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransactionTest {
 
-//    @Mock
-//    private Wallet mockWallet;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//    }
+    @Mock
+    private Wallet mockWallet;
 
-//    @Test
-//    void testTransactionInitialization() {
-//        Transaction transaction = new Transaction("Test message", TransactionType.DEPOSIT, mockWallet);
-//        assertEquals("Test message", transaction.getMessage());
-//        assertEquals(TransactionType.DEPOSIT, transaction.getTransactionType());
-//        assertEquals(mockWallet, transaction.getWallet());
-//    }
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testTransactionInitialization() {
+        Transaction transaction = new Transaction("Test message", TransactionType.DEPOSIT, mockWallet);
+        assertEquals("Test message", transaction.getMessage());
+        assertEquals(TransactionType.DEPOSIT, transaction.getTransactionType());
+        assertEquals(mockWallet, transaction.getWallet());
+    }
 }

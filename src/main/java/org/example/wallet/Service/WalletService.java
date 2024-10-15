@@ -3,13 +3,10 @@ package org.example.wallet.Service;
 import jakarta.transaction.Transactional;
 import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.WalletNotFoundException;
-import org.example.wallet.Models.Transaction;
 import org.example.wallet.Models.Wallet;
 import org.example.wallet.Repositorys.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class WalletService {
@@ -60,24 +57,6 @@ public class WalletService {
             senderWallet.addTransaction(amount + " transferred to userId " + receiverId, TransactionType.TRANSFER);
             receiverWallet.addTransaction(amount + " received from  userId " + senderId, TransactionType.TRANSFER);
             return "Transaction successful";
-        }
-        throw new WalletNotFoundException("Wallet not found");
-    }
-
-    public double getBalance(int userId) {
-        int walletId = userService.findWalletId(userId);
-        Wallet wallet = findWalletById(walletId);
-        if (wallet != null) {
-            return wallet.getBalance();
-        }
-        throw new WalletNotFoundException("Wallet not found");
-    }
-
-    public List<Transaction> getTransactions(int userId) {
-        int walletId = userService.findWalletId(userId);
-        Wallet wallet = findWalletById(walletId);
-        if (wallet != null) {
-            return wallet.getTransactions();
         }
         throw new WalletNotFoundException("Wallet not found");
     }
