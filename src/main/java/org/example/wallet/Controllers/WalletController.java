@@ -51,7 +51,7 @@ public class WalletController {
     public ResponseEntity<String> transact(@PathVariable int userId, @RequestBody TransactionDTO payload) {
         try {
             // Transfer money between two wallets
-            String response = walletService.transact(userId, payload.getToUserId(), payload.getAmount());
+            String response = walletService.transact(userId, payload.getReceiverId(), payload.getAmount());
             return ResponseEntity.ok(response);
         } catch (InsufficientBalanceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient funds");
@@ -73,6 +73,17 @@ public class WalletController {
             return ResponseEntity.status(404).body("Wallet not found: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during balance retrieval: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/transactions")
+    public ResponseEntity<Object> transactions(@PathVariable int userId) {
+        try {
+            return ResponseEntity.ok(walletService.getTransactions(userId));
+        } catch (WalletNotFoundException e) {
+            return ResponseEntity.status(404).body("Wallet not found: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error during transaction retrieval: " + e.getMessage());
         }
     }
 }

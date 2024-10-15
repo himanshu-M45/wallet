@@ -8,17 +8,17 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;
+    private String username;
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Wallet wallet;
 
-    public User(String name, String password) {
-        if (name == null || name.isEmpty() || password == null || password.isEmpty() || !(wallet == null)) {
+    public User(String username, String password) {
+        if (username == null || username.isEmpty() || password == null || password.isEmpty() || !(wallet == null)) {
             throw new IllegalArgumentException("Name and password cannot be null or empty");
         }
-        this.name = name;
+        this.username = username;
         this.password = password;
         this.wallet = new Wallet();
     }

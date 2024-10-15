@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class TransactionDTO {
     private double amount;
-    private int toUserId;
+    private int receiverId;
 }
