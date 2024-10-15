@@ -1,5 +1,6 @@
 package org.example.wallet.Service;
 
+import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Models.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,10 @@ class UserServiceTest {
         User retrievedUser = userService.findById(2);
         assertEquals("User registered successfully", response);
         assertNotNull(retrievedUser);
+    }
+
+    @Test
+    void testRegisterNewUserWithSameUsername() {
+        assertThrows(UsernameAlreadyRegisteredException.class, () -> userService.register("John Doe", "johnPass"));
     }
 }
