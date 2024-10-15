@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 public class WalletService {
     @Autowired
     private WalletRepository walletRepository;
+    @Autowired
+    private TransactionService transactionService;
 
     public Wallet findWalletById(int id) {
         return walletRepository.findById(id).orElse(null);
@@ -21,7 +23,7 @@ public class WalletService {
     public Double deposit(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
-            wallet.addTransaction(amount + " added to balance", TransactionType.DEPOSIT);
+            transactionService.saveTransaction(amount + " added to balance", TransactionType.DEPOSIT, walletId);
             return wallet.deposit(amount);
         }
         throw new WalletNotFoundException("Wallet not found");
@@ -31,7 +33,7 @@ public class WalletService {
     public Double withdrawal(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
-            wallet.addTransaction(amount + " deducted from balance", TransactionType.WITHDRAWAL);
+            transactionService.saveTransaction(amount + " deducted from balance", TransactionType.WITHDRAWAL, walletId);
             return wallet.withdrawal(amount);
         }
         throw new WalletNotFoundException("Wallet not found");
@@ -46,8 +48,8 @@ public class WalletService {
         if (senderWallet != null && receiverWallet != null) {
             senderWallet.withdrawal(amount);
             receiverWallet.deposit(amount);
-            senderWallet.addTransaction(amount + " transferred to userId " + receiverWalletId, TransactionType.TRANSFER);
-            receiverWallet.addTransaction(amount + " received from  userId " + senderWalletId, TransactionType.TRANSFER);
+            transactionService.saveTransaction(amount + " transferred to userId " + receiverWalletId, TransactionType.TRANSFER, senderWalletId);
+            transactionService.saveTransaction(amount + " received from  userId " + senderWalletId, TransactionType.TRANSFER, receiverWalletId);
             return "Transaction successful";
         }
         throw new WalletNotFoundException("Wallet not found");

@@ -1,13 +1,8 @@
 package org.example.wallet.Models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "wallets")
@@ -16,10 +11,6 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Double balance = 0.0;
-
-    @Getter
-    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> transactions = new ArrayList<>();
 
     protected Wallet() {}
 
@@ -44,9 +35,5 @@ public class Wallet {
 
     public double getBalance() {
         return balance;
-    }
-
-    public void addTransaction(String message, TransactionType transactionType) {
-        transactions.add(new Transaction(message, transactionType, this));
     }
 }

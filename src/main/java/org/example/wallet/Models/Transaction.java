@@ -17,15 +17,14 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-    @ManyToOne
-    @JoinColumn(name = "wallet_id", nullable = false)
     @JsonIgnore
-    private Wallet wallet;
+    @Column(name = "wallet_id", nullable = false)
+    private int walletId;
 
-    public Transaction(String message, TransactionType transactionType, Wallet wallet) {
+    public Transaction(String message, TransactionType transactionType, int walletId) {
         this.message = message;
         this.transactionType = transactionType;
-        this.wallet = wallet;
+        this.walletId = walletId;
     }
 
     public Transaction() {}
