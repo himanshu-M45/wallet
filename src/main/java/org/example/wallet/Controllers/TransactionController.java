@@ -11,14 +11,8 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-    @GetMapping("/balance")
-    public ResponseEntity<Object> balance(@PathVariable int walletId) {
-        double balance = transactionService.getBalance(walletId);
-        return ResponseEntity.ok(balance);
-    }
-
     @GetMapping("/transactions")
     public ResponseEntity<Object> transactions(@PathVariable int walletId) {
-        return ResponseEntity.ok(transactionService.getTransactions(walletId));
+        return ResponseEntity.ok(transactionService.getTransaction(walletId));
     }
 }

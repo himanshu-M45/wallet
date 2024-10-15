@@ -30,4 +30,10 @@ public class WalletController {
         String response = walletService.transact(walletId, payload.getReceiverId(), payload.getAmount());
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/balance")
+    public ResponseEntity<Object> balance(@PathVariable int walletId) {
+        double balance = walletService.getBalance(walletId);
+        return ResponseEntity.ok(balance);
+    }
 }

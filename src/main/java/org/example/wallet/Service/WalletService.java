@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 public class WalletService {
     @Autowired
     private WalletRepository walletRepository;
-    @Autowired
-    private UserService userService;
 
     public Wallet findWalletById(int id) {
         return walletRepository.findById(id).orElse(null);
@@ -51,6 +49,14 @@ public class WalletService {
             senderWallet.addTransaction(amount + " transferred to userId " + receiverWalletId, TransactionType.TRANSFER);
             receiverWallet.addTransaction(amount + " received from  userId " + senderWalletId, TransactionType.TRANSFER);
             return "Transaction successful";
+        }
+        throw new WalletNotFoundException("Wallet not found");
+    }
+
+    public double getBalance(int walletId) {
+        Wallet wallet = findWalletById(walletId);
+        if (wallet != null) {
+            return wallet.getBalance();
         }
         throw new WalletNotFoundException("Wallet not found");
     }

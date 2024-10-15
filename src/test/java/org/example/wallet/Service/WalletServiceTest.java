@@ -13,8 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class WalletServiceTest {
     @Autowired
     private WalletService walletService;
-    @Autowired
-    private TransactionService transactionService;
+
+    @Test
+    void testGetBalanceOfStoredUser() {
+        double balance = walletService.getBalance(1);
+        assertEquals(600, balance);
+    }
+
+    @Test
+    void testGetBalanceOfNonStoredUser() {
+        assertThrows(WalletNotFoundException.class, () -> walletService.getBalance(0));
+    }
 
     @Test
     void testDepositToNonStoredUser() {
@@ -28,9 +37,9 @@ class WalletServiceTest {
 
     @Test
     void testDepositFromUserService() {
-        assertEquals(450, transactionService.getBalance(1));
+        assertEquals(450, walletService.getBalance(1));
         double balance = walletService.deposit(1, 150);
-        assertEquals(balance, transactionService.getBalance(1));
+        assertEquals(balance, walletService.getBalance(1));
     }
 
     @Test
@@ -55,8 +64,8 @@ class WalletServiceTest {
 
     @Test
     void testWithdrawal50FromUserService() {
-        assertEquals(600, transactionService.getBalance(1));
+        assertEquals(600, walletService.getBalance(1));
         double balance = walletService.withdrawal(1, 150);
-        assertEquals(balance, transactionService.getBalance(1));
+        assertEquals(balance, walletService.getBalance(1));
     }
 }

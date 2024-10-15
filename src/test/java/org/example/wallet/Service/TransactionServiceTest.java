@@ -16,24 +16,13 @@ class TransactionServiceTest {
     private TransactionService transactionService;
 
     @Test
-    void testGetBalanceOfStoredUser() {
-        double balance = transactionService.getBalance(1);
-        assertEquals(600, balance);
-    }
-
-    @Test
-    void testGetBalanceOfNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> transactionService.getBalance(0));
-    }
-
-    @Test
-    void testGetTransactionsOfStoredUser() {
-        List<Transaction> transactions = transactionService.getTransactions(1);
+    void testGetTransactionOfStoredUser() {
+        List<Transaction> transactions = transactionService.getTransaction(1);
         assertNotNull(transactions);
     }
 
     @Test
-    void testGetTransactionsOfNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> transactionService.getTransactions(0));
+    void testGetTransactionOfNonStoredUser() {
+        assertThrows(WalletNotFoundException.class, () -> transactionService.getTransaction(0));
     }
 }
