@@ -1,10 +1,12 @@
 package org.example.wallet.Service;
 
+import org.example.wallet.Exceptions.UserNotAuthorizedException;
 import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Models.User;
 import org.example.wallet.Repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,6 +47,20 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isUserAuthorized(Integer userId, Integer walletId) {
-        return userRepository.findWalletIdByUserId(userId).equals(walletId);
+        return userRepository.findWalletIdByUserId(userId).equals(walletId) && checkUserAuthorization(userId);
+    }
+
+    private User getAuthenticatedUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+    }
+
+    private boolean checkUserAuthorization(Integer userId) {
+        User authenticatedUser = getAuthenticatedUser();
+        User user = findById(userId);
+        if (user != null && authenticatedUser != null) {
+            return authenticatedUser == user;
+        }
+        throw new UserNotAuthorizedException("User not authorized");
     }
 }

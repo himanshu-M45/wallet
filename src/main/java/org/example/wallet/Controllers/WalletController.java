@@ -38,7 +38,7 @@ public class WalletController {
     @PostMapping("/transact")
     public ResponseEntity<String> transact(@PathVariable int walletId, @RequestBody WalletDTO payload) {
         if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
-            String response = walletService.transact(walletId, payload.getReceiverId(), payload.getAmount());
+            String response = walletService.transact(walletId, payload.getReceiverWalletId(), payload.getAmount());
             return ResponseEntity.ok(response);
         }
         throw new UserNotAuthorizedException("User not authorized to transact using this wallet");

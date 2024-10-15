@@ -6,5 +6,5 @@ import lombok.Data;
 public class WalletDTO {
     private double amount;
     private int userId;
-    private int receiverId;
+    private int receiverWalletId;
 }

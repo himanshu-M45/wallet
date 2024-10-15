@@ -18,7 +18,7 @@ public class TransactionController {
 
     @GetMapping("/transactions")
     public ResponseEntity<Object> transactions(@PathVariable int walletId, @RequestBody TransactionDTO payload) {
-        if (!userService.isUserAuthorized(payload.getUserId(), walletId)) {
+        if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
             return ResponseEntity.ok(transactionService.getTransaction(walletId));
         }
         throw new UserNotAuthorizedException("User not authorized to transact using this wallet");
