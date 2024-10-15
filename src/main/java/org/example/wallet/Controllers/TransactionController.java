@@ -1,25 +1,24 @@
 package org.example.wallet.Controllers;
 
-import org.example.wallet.Exceptions.WalletNotFoundException;
-import org.example.wallet.Service.WalletQueryService;
+import org.example.wallet.Service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/{walletId}/wallet")
-public class WalletQueryController {
+@RequestMapping("/{walletId}/wallets")
+public class TransactionController {
     @Autowired
-    private WalletQueryService walletQueryService;
+    private TransactionService transactionService;
 
     @GetMapping("/balance")
     public ResponseEntity<Object> balance(@PathVariable int walletId) {
-        double balance = walletQueryService.getBalance(walletId);
+        double balance = transactionService.getBalance(walletId);
         return ResponseEntity.ok(balance);
     }
 
     @GetMapping("/transactions")
     public ResponseEntity<Object> transactions(@PathVariable int walletId) {
-        return ResponseEntity.ok(walletQueryService.getTransactions(walletId));
+        return ResponseEntity.ok(transactionService.getTransactions(walletId));
     }
 }

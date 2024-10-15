@@ -2,7 +2,6 @@ package org.example.wallet.Service;
 
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
-import org.example.wallet.Exceptions.UserIsNotRegisteredException;
 import org.example.wallet.Exceptions.WalletNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ class WalletServiceTest {
     @Autowired
     private WalletService walletService;
     @Autowired
-    private WalletQueryService walletQueryService;
+    private TransactionService transactionService;
 
     @Test
     void testDepositToNonStoredUser() {
@@ -29,9 +28,9 @@ class WalletServiceTest {
 
     @Test
     void testDepositFromUserService() {
-        assertEquals(450, walletQueryService.getBalance(1));
+        assertEquals(450, transactionService.getBalance(1));
         double balance = walletService.deposit(1, 150);
-        assertEquals(balance, walletQueryService.getBalance(1));
+        assertEquals(balance, transactionService.getBalance(1));
     }
 
     @Test
@@ -56,8 +55,8 @@ class WalletServiceTest {
 
     @Test
     void testWithdrawal50FromUserService() {
-        assertEquals(600, walletQueryService.getBalance(1));
+        assertEquals(600, transactionService.getBalance(1));
         double balance = walletService.withdrawal(1, 150);
-        assertEquals(balance, walletQueryService.getBalance(1));
+        assertEquals(balance, transactionService.getBalance(1));
     }
 }

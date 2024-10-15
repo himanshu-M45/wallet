@@ -31,7 +31,7 @@ public class UserControllerTest {
 
     @Test
     public void testRegister_Success() throws Exception {
-        Mockito.when(userService.register("testUser", "testPassword")).thenReturn(1);
+        Mockito.when(userService.register("testUser", "testPassword")).thenReturn("User registered successfully");
 
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)

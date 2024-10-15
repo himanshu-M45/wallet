@@ -1,6 +1,5 @@
 package org.example.wallet.Service;
 
-import org.example.wallet.Exceptions.UserIsNotRegisteredException;
 import org.example.wallet.Exceptions.WalletNotFoundException;
 import org.example.wallet.Models.Transaction;
 import org.junit.jupiter.api.Test;
@@ -12,29 +11,29 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class WalletQueryServiceTest {
+class TransactionServiceTest {
     @Autowired
-    private WalletQueryService walletQueryService;
+    private TransactionService transactionService;
 
     @Test
     void testGetBalanceOfStoredUser() {
-        double balance = walletQueryService.getBalance(1);
+        double balance = transactionService.getBalance(1);
         assertEquals(600, balance);
     }
 
     @Test
     void testGetBalanceOfNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> walletQueryService.getBalance(0));
+        assertThrows(WalletNotFoundException.class, () -> transactionService.getBalance(0));
     }
 
     @Test
     void testGetTransactionsOfStoredUser() {
-        List<Transaction> transactions = walletQueryService.getTransactions(1);
+        List<Transaction> transactions = transactionService.getTransactions(1);
         assertNotNull(transactions);
     }
 
     @Test
     void testGetTransactionsOfNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> walletQueryService.getTransactions(0));
+        assertThrows(WalletNotFoundException.class, () -> transactionService.getTransactions(0));
     }
 }

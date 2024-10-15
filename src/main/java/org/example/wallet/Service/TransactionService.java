@@ -9,14 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class WalletQueryService {
+public class TransactionService {
     @Autowired
     private WalletService walletService;
-    @Autowired
-    private UserService userService;
 
-    public double getBalance(int userId) {
-        int walletId = userService.findWalletId(userId);
+    public double getBalance(int walletId) {
         Wallet wallet = walletService.findWalletById(walletId);
         if (wallet != null) {
             return wallet.getBalance();
@@ -24,8 +21,7 @@ public class WalletQueryService {
         throw new WalletNotFoundException("Wallet not found");
     }
 
-    public List<Transaction> getTransactions(int userId) {
-        int walletId = userService.findWalletId(userId);
+    public List<Transaction> getTransactions(int walletId) {
         Wallet wallet = walletService.findWalletById(walletId);
         if (wallet != null) {
             return wallet.getTransactions();

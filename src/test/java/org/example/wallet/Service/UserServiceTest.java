@@ -20,41 +20,41 @@ class UserServiceTest {
 
     @Test
     public void testRegister() {
-        int savedUserId = userService.register("John Doe", "johnPass");
-//        int savedUserId = 1;
-        User retrievedUser = userService.findById(savedUserId);
+        String response = userService.register("John Doe", "johnPass");
+        User retrievedUser = userService.findById(1);
+        assertEquals("User registered successfully", response);
         assertNotNull(retrievedUser);
     }
 
     @Test
     public void testRegister2() {
-//        int savedUserId = userService.register("Ethan Hunt", "ethanPass5");
-        int savedUserId = 3;
-        User retrievedUser = userService.findById(savedUserId);
+        String response = userService.register("Ethan Hunt", "ethanPass");
+        User retrievedUser = userService.findById(8);
+        assertEquals("User registered successfully", response);
         assertNotNull(retrievedUser);
     }
 
     @Test
     public void testRegister3() {
-//        int savedUserId = userService.register("Fiona Gallagher", "fionaPass6");
-        int savedUserId = 4;
-        User retrievedUser = userService.findById(savedUserId);
+        String response = userService.register("Fiona Gallagher", "fionaPass");
+        User retrievedUser = userService.findById(7);
+        assertEquals("User registered successfully", response);
         assertNotNull(retrievedUser);
     }
 
     @Test
     public void testRegister4() {
-//        int savedUserId = userService.register("Ian Somerhalder", "ianPass9");
-        int savedUserId = 5;
-        User retrievedUser = userService.findById(savedUserId);
+        String response = userService.register("Ian Somerhalder", "ianPass");
+        User retrievedUser = userService.findById(4);
+        assertEquals("User registered successfully", response);
         assertNotNull(retrievedUser);
     }
 
     @Test
     void testRegister5() {
-//        int savedUserId = userService.register("Charlie Brown", "charliePass");
-        int savedUserId = 5;
-        User retrievedUser = userService.findById(savedUserId);
+        String response = userService.register("Charlie Brown", "charliePass");
+        User retrievedUser = userService.findById(2);
+        assertEquals("User registered successfully", response);
         assertNotNull(retrievedUser);
     }
 }

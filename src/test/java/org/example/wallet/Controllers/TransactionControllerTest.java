@@ -1,7 +1,7 @@
 package org.example.wallet.Controllers;
 
 import org.example.wallet.Exceptions.WalletNotFoundException;
-import org.example.wallet.Service.WalletQueryService;
+import org.example.wallet.Service.TransactionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,22 +17,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(WalletQueryController.class)
-class WalletQueryControllerTest {
+@WebMvcTest(TransactionController.class)
+class TransactionControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private WalletQueryService walletQueryService;
+    private TransactionService transactionService;
 
     @BeforeEach
     public void setUp() {
-        Mockito.reset(walletQueryService);
+        Mockito.reset(transactionService);
     }
 
     @Test
     public void testGetBalance_Success() throws Exception {
-        when(walletQueryService.getBalance(anyInt())).thenReturn(300.0);
+        when(transactionService.getBalance(anyInt())).thenReturn(300.0);
 
         mockMvc.perform(get("/2/wallet/balance")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -40,12 +40,12 @@ class WalletQueryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("300.0"));
 
-        verify(walletQueryService, times(1)).getBalance(anyInt());
+        verify(transactionService, times(1)).getBalance(anyInt());
     }
 
     @Test
     public void testGetBalance_WalletNotFound() throws Exception {
-        when(walletQueryService.getBalance(anyInt())).thenThrow(new WalletNotFoundException("Wallet not found"));
+        when(transactionService.getBalance(anyInt())).thenThrow(new WalletNotFoundException("Wallet not found"));
 
         mockMvc.perform(get("/7/wallet/balance")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -53,6 +53,6 @@ class WalletQueryControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Wallet not found"));
 
-        verify(walletQueryService, times(1)).getBalance(anyInt());
+        verify(transactionService, times(1)).getBalance(anyInt());
     }
 }
