@@ -7,18 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/")
 public class UserController {
     @Autowired
     private UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody UserDTO payload) {
-        try {
-            int userId = userService.register(payload.getName(), payload.getPassword());
-            return ResponseEntity.ok(userId);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during user creation: " + e.getMessage());
-        }
+        int userId = userService.register(payload.getName(), payload.getPassword());
+        return ResponseEntity.ok(userId);
     }
 }

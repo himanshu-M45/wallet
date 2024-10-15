@@ -33,7 +33,7 @@ public class UserControllerTest {
     public void testRegister_Success() throws Exception {
         Mockito.when(userService.register("testUser", "testPassword")).thenReturn(1);
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\"}"))
                 .andExpect(status().isOk())
@@ -44,13 +44,13 @@ public class UserControllerTest {
 
     @Test
     public void testRegister_Failure() throws Exception {
-        Mockito.when(userService.register("testUser", "testPassword")).thenThrow(new RuntimeException("Registration failed"));
+        Mockito.when(userService.register("testUser", "testPassword")).thenThrow(new RuntimeException("An error occurred"));
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\"}"))
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Error during user creation: Registration failed"));
+                .andExpect(content().string("An error occurred"));
 
         verify(userService, times(1)).register("testUser", "testPassword");
     }
