@@ -15,7 +15,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "reference")
+    @Column(name = "reference", nullable = false)
     private String reference;
 
     @Enumerated(EnumType.STRING)
@@ -29,10 +29,10 @@ public class Transaction {
     @Column(name = "timestamp", nullable = false)
     private Date timestamp;
 
-    @Column(name = "deposit")
+    @Column(name = "deposit", nullable = false)
     private double deposit;
-    
-    @Column(name = "withdrawal")
+
+    @Column(name = "withdrawal", nullable = false)
     private double withdrawal;
 
     public Transaction(int walletId, double deposit, double withdrawal, TransactionType transactionType, String reference) {

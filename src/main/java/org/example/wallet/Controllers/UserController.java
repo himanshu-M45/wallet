@@ -14,7 +14,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody UserDTO payload) {
-        String response = userService.register(payload.getName(), payload.getPassword());
+        String response = userService.register(payload.getName(), payload.getPassword(), payload.getCurrencyType());
         return ResponseEntity.ok(response);
     }
 }

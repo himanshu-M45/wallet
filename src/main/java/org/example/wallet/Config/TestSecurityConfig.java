@@ -18,7 +18,6 @@ public class TestSecurityConfig {
                                 .anyRequest().permitAll()
                 )
                 .csrf().disable(); // Disable CSRF for tests
-
         return http.build();
     }
 }

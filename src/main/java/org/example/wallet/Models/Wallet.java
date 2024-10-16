@@ -1,6 +1,8 @@
 package org.example.wallet.Models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import org.example.wallet.Enums.CurrencyType;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 
@@ -12,7 +14,16 @@ public class Wallet {
     private Integer id;
     private Double balance = 0.0;
 
-    protected Wallet() {}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "currency", nullable = false)
+    @Getter
+    private CurrencyType currencyType;
+
+    protected Wallet(CurrencyType currencyType) {
+        this.currencyType = currencyType;
+    }
+
+    public Wallet() {}
 
     public Double deposit(double amount) {
         if (amount <= 0) {

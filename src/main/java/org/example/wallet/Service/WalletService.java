@@ -1,6 +1,7 @@
 package org.example.wallet.Service;
 
 import jakarta.transaction.Transactional;
+import org.example.wallet.Enums.CurrencyType;
 import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.WalletNotFoundException;
 import org.example.wallet.Models.Wallet;
@@ -46,10 +47,17 @@ public class WalletService {
         Wallet receiverWallet = findWalletById(receiverWalletId);
 
         if (senderWallet != null && receiverWallet != null) {
+            // convert amount to receiver currency
+            CurrencyType receiverCurrency = receiverWallet.getCurrencyType();
+            double convertedAmount = senderWallet.getCurrencyType().convertTo(amount, receiverCurrency);
+
+            // perform transaction
             senderWallet.withdrawal(amount);
-            receiverWallet.deposit(amount);
+            receiverWallet.deposit(convertedAmount);
+
+            // save transaction
             transactionService.saveTransaction(senderWalletId, 0, amount, TransactionType.TRANSFER, "TO: " + receiverWalletId);
-            transactionService.saveTransaction(receiverWalletId, amount, 0, TransactionType.TRANSFER, "FROM: " + senderWalletId);
+            transactionService.saveTransaction(receiverWalletId, convertedAmount, 0, TransactionType.TRANSFER, "FROM: " + senderWalletId);
             return "Transaction successful";
         }
         throw new WalletNotFoundException("Wallet not found");

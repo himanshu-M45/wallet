@@ -1,5 +1,6 @@
 package org.example.wallet.Models;
 
+import org.example.wallet.Enums.CurrencyType;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
 import org.example.wallet.Exceptions.InvalidAmountEnteredException;
 import org.junit.jupiter.api.Test;
@@ -9,31 +10,31 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserTest {
     @Test
     void testValidUserInitialization() {
-        User user = new User("John Doe", "password123");
+        User user = new User("John Doe", "password123", CurrencyType.INR);
         assertNotNull(user);
     }
 
     @Test
     void testInvalidUserInitializationEmptyNameAndPassword() {
-        assertThrows(IllegalArgumentException.class, () -> new User("", ""));
+        assertThrows(IllegalArgumentException.class, () -> new User("", "", null));
     }
 
     @Test
     void testInvalidUserInitializationNullNameAndPassword() {
-        assertThrows(IllegalArgumentException.class, () -> new User(null, null));
+        assertThrows(IllegalArgumentException.class, () -> new User(null, null, null));
     }
 
     @Test
     void testTwoValidUsersShouldNotBeSame() {
-        User user1 = new User("Charlie Brown", "charliePass");
-        User user2 = new User("Diana Prince", "dianaPass4");
+        User user1 = new User("Charlie Brown", "charliePass", CurrencyType.INR);
+        User user2 = new User("Diana Prince", "dianaPass4", CurrencyType.INR);
 
         assertNotEquals(user1, user2);
     }
 
 //    @Test
 //    void testUserWalletBalance() {
-//        User user = new User("Ian Somerhalder", "ianPass9");
+//        User user = new User("Ian Somerhalder", "ianPass9", CurrencyType.INR);
 //        user.deposit(100);
 //
 //        assertEquals(100, user.getBalance());
@@ -41,32 +42,32 @@ public class UserTest {
 //
 //    @Test
 //    void testUserWalletAdd0Balance() {
-//        User user = new User("Jessica Jones", "jessicaPass10");
+//        User user = new User("Jessica Jones", "jessicaPass10", CurrencyType.INR);
 //        assertThrows(InvalidAmountEnteredException.class, () -> user.deposit(0));
 //    }
 //
 //    @Test
 //    void testUserWalletAddNegativeBalance() {
-//        User user = new User("Kevin Hart", "kevinPass11");
+//        User user = new User("Kevin Hart", "kevinPass11", CurrencyType.INR);
 //        assertThrows(InvalidAmountEnteredException.class, () -> user.deposit(-100));
 //    }
 //
 //    @Test
 //    void testUserWalletWithdraw0Balance() {
-//        User user = new User("Laura Palmer", "lauraPass12");
+//        User user = new User("Laura Palmer", "lauraPass12", CurrencyType.INR);
 //        assertThrows(InvalidAmountEnteredException.class, () -> user.withdraw(0));
 //    }
 //
 //    @Test
 //    void testUserWalletWithdraw100WhileBalanceIs50() {
-//        User user = new User("Michael Scott", "michaelPass13");
+//        User user = new User("Michael Scott", "michaelPass13", CurrencyType.INR);
 //        user.deposit(50);
 //        assertThrows(InsufficientBalanceException.class, () -> user.withdraw(100));
 //    }
 //
 //    @Test
 //    void testUserWalletWithdraw150From550AndUpdateBalance350() {
-//        User user = new User("Nancy Drew", "nancyPass14");
+//        User user = new User("Nancy Drew", "nancyPass14", CurrencyType.INR);
 //        user.deposit(500);
 //        double balance = user.withdraw(150);
 //        assertEquals(balance, user.getBalance());

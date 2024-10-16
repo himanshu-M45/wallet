@@ -1,5 +1,6 @@
 package org.example.wallet.Service;
 
+import org.example.wallet.Enums.CurrencyType;
 import org.example.wallet.Exceptions.UserNotAuthorizedException;
 import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Models.User;
@@ -19,9 +20,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    public String register(String username, String password) {
+    public String register(String username, String password, CurrencyType currencyType) {
         try {
-            userRepository.save(new User(username, password));
+            userRepository.save(new User(username, password, currencyType));
             return "User registered successfully";
         } catch (DataIntegrityViolationException e) {
             throw new UsernameAlreadyRegisteredException("Username already exists");
