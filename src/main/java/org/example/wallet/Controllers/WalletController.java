@@ -19,37 +19,29 @@ public class WalletController {
 
     @PostMapping("/deposit")
     public ResponseEntity<Object> deposit(@PathVariable int walletId, @RequestBody WalletDTO payload) {
-        if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
-            double balance = walletService.deposit(walletId, payload.getAmount());
-            return ResponseEntity.ok(balance);
-        }
-        throw new UserNotAuthorizedException("User not authorized to deposit to this wallet");
+        userService.isUserAuthorized(payload.getUserId(), walletId);
+        double balance = walletService.deposit(walletId, payload.getAmount());
+        return ResponseEntity.ok(balance);
     }
 
     @PostMapping("/withdrawal")
     public ResponseEntity<Object> withdrawal(@PathVariable int walletId, @RequestBody WalletDTO payload) {
-        if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
-            double balance = walletService.withdrawal(walletId, payload.getAmount());
-            return ResponseEntity.ok(balance);
-        }
-        throw new UserNotAuthorizedException("User not authorized to withdraw from this wallet");
+        userService.isUserAuthorized(payload.getUserId(), walletId);
+        double balance = walletService.withdrawal(walletId, payload.getAmount());
+        return ResponseEntity.ok(balance);
     }
 
     @PostMapping("/transfers")
     public ResponseEntity<String> transfer(@PathVariable int walletId, @RequestBody WalletDTO payload) {
-        if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
-            String response = walletService.transfer(walletId, payload.getReceiverWalletId(), payload.getAmount());
-            return ResponseEntity.ok(response);
-        }
-        throw new UserNotAuthorizedException("User not authorized to transact using this wallet");
+        userService.isUserAuthorized(payload.getUserId(), walletId);
+        String response = walletService.transfer(walletId, payload.getReceiverWalletId(), payload.getAmount());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/balance")
     public ResponseEntity<Object> balance(@PathVariable int walletId, @RequestBody TransactionDTO payload) {
-        if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
-            double balance = walletService.getBalance(walletId);
-            return ResponseEntity.ok(balance);
-        }
-        throw new UserNotAuthorizedException("User not authorized to check balance of this wallet");
+        userService.isUserAuthorized(payload.getUserId(), walletId);
+        double balance = walletService.getBalance(walletId);
+        return ResponseEntity.ok(balance);
     }
 }

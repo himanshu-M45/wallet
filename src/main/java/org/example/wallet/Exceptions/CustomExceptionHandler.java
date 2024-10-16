@@ -9,19 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler(WalletNotFoundException.class)
-    public ResponseEntity<String> handleWalletNotFoundException(WalletNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
-
-    @ExceptionHandler(InvalidAmountEnteredException.class)
-    public ResponseEntity<String> handleInvalidAmountEnteredException(InvalidAmountEnteredException e) {
+    @ExceptionHandler(CannotCreateUserException.class)
+    public ResponseEntity<String> handleCannotCreateUserException(CannotCreateUserException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
-    @ExceptionHandler(UserIsNotRegisteredException.class)
-    public ResponseEntity<String> handleUserIsNotRegisteredException(UserIsNotRegisteredException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    @ExceptionHandler(UsernameAlreadyRegisteredException.class)
+    public ResponseEntity<String> handleUsernameAlreadyRegisteredException(UsernameAlreadyRegisteredException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -29,14 +24,29 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler(UsernameAlreadyRegisteredException.class)
-    public ResponseEntity<String> handleUsernameAlreadyRegisteredException(UsernameAlreadyRegisteredException e) {
+    @ExceptionHandler(UserNotAuthenticatedException.class)
+    public ResponseEntity<String> handleUserNotAuthenticatedException(UserNotAuthenticatedException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserNotAuthorizedException.class)
+    public ResponseEntity<String> handleUserNotAuthorizedException(UserNotAuthorizedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidAmountEnteredException.class)
+    public ResponseEntity<String> handleInvalidAmountEnteredException(InvalidAmountEnteredException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     @ExceptionHandler(InsufficientBalanceException.class)
     public ResponseEntity<String> handleInsufficientBalanceException(InsufficientBalanceException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(WalletNotFoundException.class)
+    public ResponseEntity<String> handleWalletNotFoundException(WalletNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

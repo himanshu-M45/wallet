@@ -1,6 +1,7 @@
 package org.example.wallet.Service;
 
 import org.example.wallet.Enums.CurrencyType;
+import org.example.wallet.Exceptions.CannotCreateUserException;
 import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Models.User;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,11 @@ class UserServiceTest {
         User retrievedUser = userService.findById(2);
         assertEquals("User registered successfully", response);
         assertNotNull(retrievedUser);
+    }
+
+    @Test
+    void testRegisterNewUserWithNullUsername() {
+        assertThrows(CannotCreateUserException.class, () -> userService.register(null, "johnPass", CurrencyType.INR));
     }
 
     @Test

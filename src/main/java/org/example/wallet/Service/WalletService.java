@@ -27,7 +27,7 @@ public class WalletService {
             transactionService.saveTransaction(walletId, amount, 0, TransactionType.DEPOSIT, "SELF");
             return wallet.deposit(amount);
         }
-        throw new WalletNotFoundException("Wallet not found");
+        throw new WalletNotFoundException("wallet not found");
     }
 
     @Transactional
@@ -37,7 +37,7 @@ public class WalletService {
             transactionService.saveTransaction(walletId, 0, amount, TransactionType.WITHDRAWAL, "SELF");
             return wallet.withdrawal(amount);
         }
-        throw new WalletNotFoundException("Wallet not found");
+        throw new WalletNotFoundException("wallet not found");
     }
 
     @Transactional
@@ -60,7 +60,7 @@ public class WalletService {
             transactionService.saveTransaction(receiverWalletId, convertedAmount, 0, TransactionType.TRANSFER, "FROM: " + senderWalletId);
             return "Transaction successful";
         }
-        throw new WalletNotFoundException("Wallet not found");
+        throw new WalletNotFoundException("wallet not found");
     }
 
     public double getBalance(int walletId) {
@@ -68,6 +68,6 @@ public class WalletService {
         if (wallet != null) {
             return wallet.getBalance();
         }
-        throw new WalletNotFoundException("Wallet not found");
+        throw new WalletNotFoundException("wallet not found");
     }
 }

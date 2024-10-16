@@ -1,6 +1,7 @@
 package org.example.wallet.Service;
 
 import org.example.wallet.Enums.CurrencyType;
+import org.example.wallet.Exceptions.UserNotAuthenticatedException;
 import org.example.wallet.Exceptions.UserNotAuthorizedException;
 import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Models.User;
@@ -23,9 +24,9 @@ public class UserService implements UserDetailsService {
     public String register(String username, String password, CurrencyType currencyType) {
         try {
             userRepository.save(new User(username, password, currencyType));
-            return "User registered successfully";
+            return "user registered successfully";
         } catch (DataIntegrityViolationException e) {
-            throw new UsernameAlreadyRegisteredException("Username already exists");
+            throw new UsernameAlreadyRegisteredException("username already exists");
         }
     }
 
@@ -47,8 +48,11 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public boolean isUserAuthorized(Integer userId, Integer walletId) {
-        return userRepository.findWalletIdByUserId(userId).equals(walletId) && checkUserAuthorization(userId);
+    public void isUserAuthorized(Integer userId, Integer walletId) {
+        if (userRepository.findWalletIdByUserId(userId).equals(walletId) && checkUserAuthorization(userId)) {
+            return;
+        }
+        throw new UserNotAuthorizedException("user not authorized");
     }
 
     private User getAuthenticatedUser() {
@@ -62,6 +66,6 @@ public class UserService implements UserDetailsService {
         if (user != null && authenticatedUser != null) {
             return authenticatedUser == user;
         }
-        throw new UserNotAuthorizedException("User not authorized");
+        throw new UserNotAuthenticatedException("user not authenticated");
     }
 }

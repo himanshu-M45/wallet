@@ -18,10 +18,8 @@ public class TransactionController {
 
     @GetMapping("/{walletId}/transaction")
     public ResponseEntity<Object> transactions(@PathVariable int walletId, @RequestBody TransactionDTO payload) {
-        if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
-            return ResponseEntity.ok(transactionService.getTransaction(walletId));
-        }
-        throw new UserNotAuthorizedException("User not authorized to transact using this wallet");
+        userService.isUserAuthorized(payload.getUserId(), walletId);
+        return ResponseEntity.ok(transactionService.getTransaction(walletId));
     }
 
     @GetMapping("/all")
