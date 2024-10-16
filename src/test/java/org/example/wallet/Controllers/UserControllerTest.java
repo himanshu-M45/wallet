@@ -2,6 +2,8 @@ package org.example.wallet.Controllers;
 
 import org.example.wallet.Config.TestSecurityConfig;
 import org.example.wallet.Enums.CurrencyType;
+import org.example.wallet.Exceptions.CannotCreateUserException;
+import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,8 @@ public class UserControllerTest {
 
     @Test
     public void testRegister_Success() throws Exception {
-        Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR)).thenReturn("User registered successfully");
+        Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR))
+                .thenReturn("User registered successfully");
 
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -48,13 +51,28 @@ public class UserControllerTest {
 
     @Test
     public void testRegister_Failure() throws Exception {
-        Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR)).thenThrow(new RuntimeException("An error occurred"));
+        Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR))
+                .thenThrow(new CannotCreateUserException("name, password, currencyType cannot be null or empty"));
 
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("An error occurred"));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("name, password, currencyType cannot be null or empty"));
+
+        verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
+    }
+
+    @Test
+    public void testRegister_UsernameAlreadyRegistered() throws Exception {
+        Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR))
+                .thenThrow(new UsernameAlreadyRegisteredException("username already exists"));
+
+        mockMvc.perform(post("/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("username already exists"));
 
         verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
     }

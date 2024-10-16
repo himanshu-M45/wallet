@@ -1,7 +1,6 @@
 package org.example.wallet.Controllers;
 
 import org.example.wallet.DTO.TransactionDTO;
-import org.example.wallet.Exceptions.UserNotAuthorizedException;
 import org.example.wallet.Service.TransactionService;
 import org.example.wallet.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

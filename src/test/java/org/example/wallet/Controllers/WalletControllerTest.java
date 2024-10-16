@@ -1,9 +1,7 @@
 package org.example.wallet.Controllers;
 
 import org.example.wallet.Config.TestSecurityConfig;
-import org.example.wallet.Exceptions.InsufficientBalanceException;
-import org.example.wallet.Exceptions.InvalidAmountEnteredException;
-import org.example.wallet.Exceptions.WalletNotFoundException;
+import org.example.wallet.Exceptions.*;
 import org.example.wallet.Service.UserService;
 import org.example.wallet.Service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +38,34 @@ class WalletControllerTest {
     }
 
     @Test
+    void testDepositUserNotAuthorized() throws Exception {
+        Mockito.doThrow(new UserNotAuthorizedException("user not authorized"))
+                .when(userService).isUserAuthorized(anyInt(), anyInt());
+
+        mockMvc.perform(post("/wallets/10/deposit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":1, \"amount\":100.0}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("user not authorized"));
+
+        verify(userService, times(1)).isUserAuthorized(anyInt(), anyInt());
+    }
+
+    @Test
+    void testDepositUserNotAuthenticated() throws Exception {
+        Mockito.doThrow(new UserNotAuthenticatedException("user not authenticated"))
+                .when(userService).isUserAuthorized(anyInt(), anyInt());
+
+        mockMvc.perform(post("/wallets/1/deposit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"userId\":10, \"amount\":100.0}"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string("user not authenticated"));
+
+        verify(userService, times(1)).isUserAuthorized(anyInt(), anyInt());
+    }
+
+    @Test
     public void testDeposit_Success() throws Exception {
         Mockito.when(walletService.deposit(anyInt(), anyDouble())).thenReturn(200.0);
 
@@ -54,7 +80,8 @@ class WalletControllerTest {
 
     @Test
     public void testDeposit_InvalidAmount() throws Exception {
-        Mockito.when(walletService.deposit(anyInt(), anyDouble())).thenThrow(new InvalidAmountEnteredException("Deposit amount cannot be negative or zero"));
+        Mockito.when(walletService.deposit(anyInt(), anyDouble()))
+                .thenThrow(new InvalidAmountEnteredException("Deposit amount cannot be negative or zero"));
 
         mockMvc.perform(post("/wallets/2/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +94,8 @@ class WalletControllerTest {
 
     @Test
     public void testDeposit_WalletNotFound() throws Exception {
-        Mockito.when(walletService.deposit(anyInt(), anyDouble())).thenThrow(new WalletNotFoundException("Wallet not found"));
+        Mockito.when(walletService.deposit(anyInt(), anyDouble()))
+                .thenThrow(new WalletNotFoundException("Wallet not found"));
 
         mockMvc.perform(post("/wallets/2/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +121,8 @@ class WalletControllerTest {
 
     @Test
     public void testWithdrawal_InvalidAmount() throws Exception {
-        when(walletService.withdrawal(anyInt(), anyDouble())).thenThrow(new InvalidAmountEnteredException("Withdrawal amount cannot be negative or zero"));
+        when(walletService.withdrawal(anyInt(), anyDouble()))
+                .thenThrow(new InvalidAmountEnteredException("Withdrawal amount cannot be negative or zero"));
 
         mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +135,8 @@ class WalletControllerTest {
 
     @Test
     public void testWithdrawal_InsufficientBalance() throws Exception {
-        when(walletService.withdrawal(anyInt(), anyDouble())).thenThrow(new InsufficientBalanceException("Insufficient balance"));
+        when(walletService.withdrawal(anyInt(), anyDouble()))
+                .thenThrow(new InsufficientBalanceException("Insufficient balance"));
 
         mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +149,8 @@ class WalletControllerTest {
 
     @Test
     public void testWithdrawal_WalletNotFound() throws Exception {
-        when(walletService.withdrawal(anyInt(), anyDouble())).thenThrow(new WalletNotFoundException("Wallet not found"));
+        when(walletService.withdrawal(anyInt(), anyDouble()))
+                .thenThrow(new WalletNotFoundException("Wallet not found"));
 
         mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -158,7 +189,8 @@ class WalletControllerTest {
 
     @Test
     void testTransferSuccess() throws Exception {
-        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble())).thenReturn("transfer successful");
+        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble()))
+                .thenReturn("transfer successful");
 
         mockMvc.perform(post("/wallets/1/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -171,7 +203,8 @@ class WalletControllerTest {
 
     @Test
     void testTransferInsufficientFunds() throws Exception {
-        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble())).thenThrow(new InsufficientBalanceException("Insufficient balance"));
+        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble()))
+                .thenThrow(new InsufficientBalanceException("Insufficient balance"));
 
         mockMvc.perform(post("/wallets/1/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -184,7 +217,8 @@ class WalletControllerTest {
 
     @Test
     void testTransferWalletNotFound() throws Exception {
-        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble())).thenThrow(new WalletNotFoundException("Wallet not found"));
+        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble()))
+                .thenThrow(new WalletNotFoundException("Wallet not found"));
 
         mockMvc.perform(post("/wallets/15/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -197,7 +231,8 @@ class WalletControllerTest {
 
     @Test
     void testTransferInvalidAmount() throws Exception {
-        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble())).thenThrow(new InvalidAmountEnteredException("Invalid amount entered"));
+        Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble()))
+                .thenThrow(new InvalidAmountEnteredException("Invalid amount entered"));
 
         mockMvc.perform(post("/wallets/1/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
