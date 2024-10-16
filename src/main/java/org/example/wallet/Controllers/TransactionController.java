@@ -9,18 +9,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/wallets/{walletId}")
+@RequestMapping("/transactions")
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
     @Autowired
     private UserService userService;
 
-    @GetMapping("/transactions")
+    @GetMapping("/{walletId}/transaction")
     public ResponseEntity<Object> transactions(@PathVariable int walletId, @RequestBody TransactionDTO payload) {
         if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
             return ResponseEntity.ok(transactionService.getTransaction(walletId));
         }
         throw new UserNotAuthorizedException("User not authorized to transact using this wallet");
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Object> allTransactions() {
+        return ResponseEntity.ok(transactionService.getAllTransactions());
     }
 }
