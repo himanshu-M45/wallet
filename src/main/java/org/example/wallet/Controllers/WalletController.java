@@ -35,10 +35,10 @@ public class WalletController {
         throw new UserNotAuthorizedException("User not authorized to withdraw from this wallet");
     }
 
-    @PostMapping("/transact")
-    public ResponseEntity<String> transact(@PathVariable int walletId, @RequestBody WalletDTO payload) {
+    @PostMapping("/transfers")
+    public ResponseEntity<String> transfer(@PathVariable int walletId, @RequestBody WalletDTO payload) {
         if (userService.isUserAuthorized(payload.getUserId(), walletId)) {
-            String response = walletService.transact(walletId, payload.getReceiverWalletId(), payload.getAmount());
+            String response = walletService.transfer(walletId, payload.getReceiverWalletId(), payload.getAmount());
             return ResponseEntity.ok(response);
         }
         throw new UserNotAuthorizedException("User not authorized to transact using this wallet");

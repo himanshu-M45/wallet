@@ -13,8 +13,8 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public void saveTransaction(String message, TransactionType transactionType, int walletId) {
-        transactionRepository.save(new Transaction(message, transactionType, walletId));
+    public void saveTransaction(int walletId, double deposit, double withdrawal, TransactionType transactionType, String reference) {
+        transactionRepository.save(new Transaction(walletId, deposit, withdrawal, transactionType, reference));
     }
 
     public List<Transaction> getTransaction(int walletId) {

@@ -23,7 +23,7 @@ public class WalletService {
     public Double deposit(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
-            transactionService.saveTransaction(amount + " added to balance", TransactionType.DEPOSIT, walletId);
+            transactionService.saveTransaction(walletId, amount, 0, TransactionType.DEPOSIT, "SELF");
             return wallet.deposit(amount);
         }
         throw new WalletNotFoundException("Wallet not found");
@@ -33,14 +33,14 @@ public class WalletService {
     public Double withdrawal(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
-            transactionService.saveTransaction(amount + " deducted from balance", TransactionType.WITHDRAWAL, walletId);
+            transactionService.saveTransaction(walletId, 0, amount, TransactionType.WITHDRAWAL, "SELF");
             return wallet.withdrawal(amount);
         }
         throw new WalletNotFoundException("Wallet not found");
     }
 
     @Transactional
-    public String transact(int senderWalletId, int receiverWalletId, double amount) {
+    public String transfer(int senderWalletId, int receiverWalletId, double amount) {
         // find wallet by respective id's
         Wallet senderWallet = findWalletById(senderWalletId);
         Wallet receiverWallet = findWalletById(receiverWalletId);
@@ -48,8 +48,8 @@ public class WalletService {
         if (senderWallet != null && receiverWallet != null) {
             senderWallet.withdrawal(amount);
             receiverWallet.deposit(amount);
-            transactionService.saveTransaction(amount + " transferred to userId " + receiverWalletId, TransactionType.TRANSFER, senderWalletId);
-            transactionService.saveTransaction(amount + " received from  userId " + senderWalletId, TransactionType.TRANSFER, receiverWalletId);
+            transactionService.saveTransaction(senderWalletId, 0, amount, TransactionType.TRANSFER, "TO: " + receiverWalletId);
+            transactionService.saveTransaction(receiverWalletId, amount, 0, TransactionType.TRANSFER, "FROM: " + senderWalletId);
             return "Transaction successful";
         }
         throw new WalletNotFoundException("Wallet not found");
