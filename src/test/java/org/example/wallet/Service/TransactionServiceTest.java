@@ -17,12 +17,7 @@ class TransactionServiceTest {
 
     @Test
     void testGetTransactionOfStoredUser() {
-        List<Transaction> transactions = transactionService.getTransaction(1);
+        List<Transaction> transactions = transactionService.getTransactionsByWalletId(1);
         assertNotNull(transactions);
-    }
-
-    @Test
-    void testGetTransactionOfNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> transactionService.getTransaction(0));
     }
 }

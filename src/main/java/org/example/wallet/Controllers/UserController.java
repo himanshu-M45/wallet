@@ -14,7 +14,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping("/users")
     public ResponseEntity<ResponseDTO<String>> register(@RequestBody UserDTO payload) {
         String response = userService.register(payload.getName(), payload.getPassword(), payload.getCurrencyType());
         return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.CREATED.value(), response));

@@ -28,8 +28,4 @@ public class TransactionService {
     public List<Transaction> getTransactionsByWalletId(int walletId) {
         return transactionRepository.findByWalletId(walletId);
     }
-
-    public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
-    }
 }

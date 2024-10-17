@@ -40,7 +40,7 @@ public class UserControllerTest {
         Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR))
                 .thenReturn("user registered successfully");
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isOk())
@@ -55,7 +55,7 @@ public class UserControllerTest {
         Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR))
                 .thenThrow(new CannotCreateUserException("name, password, currencyType cannot be null or empty"));
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isBadRequest())
@@ -71,7 +71,7 @@ public class UserControllerTest {
         Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR))
                 .thenThrow(new UsernameAlreadyRegisteredException("username already exists"));
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isConflict())

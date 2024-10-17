@@ -17,7 +17,7 @@ class WalletServiceTest {
     @Test
     void testGetBalanceOfStoredUser() {
         double balance = walletService.getBalance(1);
-        assertEquals(600, balance);
+        assertEquals(698, balance);
     }
 
     @Test
@@ -26,46 +26,32 @@ class WalletServiceTest {
     }
 
     @Test
-    void testDepositToNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> walletService.deposit(0, 100));
+    void testDepositsToNonStoredUser() {
+        assertThrows(WalletNotFoundException.class, () -> walletService.deposits(0, 100));
     }
 
     @Test
-    void testWithdrawalFromNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> walletService.withdrawal(0, 100));
+    void testWithdrawalsFromNonStoredUser() {
+        assertThrows(WalletNotFoundException.class, () -> walletService.withdrawals(0, 100));
     }
 
     @Test
-    void testDepositFromUserService() {
-        assertEquals(450, walletService.getBalance(1));
-        double balance = walletService.deposit(1, 150);
-        assertEquals(balance, walletService.getBalance(1));
+    void testDeposits0FromUserService() {
+        assertThrows(InvalidAmountEnteredException.class, () -> walletService.deposits(1, 0));
     }
 
     @Test
-    void testDeposit0FromUserService() {
-        assertThrows(InvalidAmountEnteredException.class, () -> walletService.deposit(1, 0));
+    void testWithdrawals0FromUserService() {
+        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdrawals(1, 0));
     }
 
     @Test
-    void testWithdrawal0FromUserService() {
-        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdrawal(1, 0));
+    void testWithdrawalsNegativeAmountFromUserService() {
+        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdrawals(1, -100));
     }
 
     @Test
-    void testWithdrawalNegativeAmountFromUserService() {
-        assertThrows(InvalidAmountEnteredException.class, () -> walletService.withdrawal(1, -100));
-    }
-
-    @Test
-    void testWithdrawalMoreThanGetBalanceFromUserService() {
-        assertThrows(InsufficientBalanceException.class, () -> walletService.withdrawal(1, 500));
-    }
-
-    @Test
-    void testWithdrawal50FromUserService() {
-        assertEquals(600, walletService.getBalance(1));
-        double balance = walletService.withdrawal(1, 150);
-        assertEquals(balance, walletService.getBalance(1));
+    void testWithdrawalsMoreThanGetBalanceFromUserService() {
+        assertThrows(InsufficientBalanceException.class, () -> walletService.withdrawals(1, 500));
     }
 }

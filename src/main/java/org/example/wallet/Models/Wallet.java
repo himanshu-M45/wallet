@@ -25,15 +25,15 @@ public class Wallet {
 
     public Wallet() {}
 
-    public Double deposit(double amount) {
+    public String deposit(double amount) {
         if (amount <= 0) {
             throw new InvalidAmountEnteredException("deposit amount cannot be negative or zero");
         }
         this.balance += amount;
-        return this.balance;
+        return "updated balance: " + this.balance;
     }
 
-    public Double withdrawal(double amount) {
+    public String withdrawal(double amount) {
         if (amount <= 0) {
             throw new InvalidAmountEnteredException("withdrawal amount cannot be negative or zero");
         }
@@ -41,7 +41,7 @@ public class Wallet {
             throw new InsufficientBalanceException("insufficient balance");
         }
         this.balance -= amount;
-        return this.balance;
+        return "updated balance: " + this.balance;
     }
 
     public double getBalance() {

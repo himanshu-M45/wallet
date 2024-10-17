@@ -21,7 +21,7 @@ public class WalletService {
     }
 
     @Transactional
-    public Double deposit(int walletId, double amount) {
+    public String deposits(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
             transactionService.saveWalletTransaction(amount, walletId, TransactionType.DEPOSIT);
@@ -31,7 +31,7 @@ public class WalletService {
     }
 
     @Transactional
-    public Double withdrawal(int walletId, double amount) {
+    public String withdrawals(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
             transactionService.saveWalletTransaction(amount, walletId, TransactionType.WITHDRAWAL);
