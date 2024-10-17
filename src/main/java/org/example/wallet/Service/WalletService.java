@@ -24,7 +24,7 @@ public class WalletService {
     public Double deposit(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
-            transactionService.saveTransaction(walletId, amount, 0, TransactionType.DEPOSIT, "SELF");
+            transactionService.saveWalletTransaction(amount, walletId, TransactionType.DEPOSIT);
             return wallet.deposit(amount);
         }
         throw new WalletNotFoundException("wallet not found");
@@ -34,7 +34,7 @@ public class WalletService {
     public Double withdrawal(int walletId, double amount) {
         Wallet wallet = findWalletById(walletId);
         if (wallet != null) {
-            transactionService.saveTransaction(walletId, 0, amount, TransactionType.WITHDRAWAL, "SELF");
+            transactionService.saveWalletTransaction(amount, walletId, TransactionType.WITHDRAWAL);
             return wallet.withdrawal(amount);
         }
         throw new WalletNotFoundException("wallet not found");
@@ -56,8 +56,7 @@ public class WalletService {
             receiverWallet.deposit(convertedAmount);
 
             // save transaction
-            transactionService.saveTransaction(senderWalletId, 0, amount, TransactionType.TRANSFER, "TO: " + receiverWalletId);
-            transactionService.saveTransaction(receiverWalletId, convertedAmount, 0, TransactionType.TRANSFER, "FROM: " + senderWalletId);
+            transactionService.saveTransferTransaction(amount, senderWalletId, receiverWalletId, TransactionType.TRANSFER);
             return "Transaction successful";
         }
         throw new WalletNotFoundException("wallet not found");

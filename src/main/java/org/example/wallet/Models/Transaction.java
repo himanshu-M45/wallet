@@ -8,39 +8,27 @@ import org.example.wallet.Enums.TransactionType;
 import java.util.Date;
 
 @Entity
-@Table(name = "transactions")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
-public class Transaction {
+public abstract class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "reference", nullable = false)
-    private String reference;
+    @JsonIgnore
+    @Column(name = "amount", nullable = false)
+    private double amount;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
-
-    @JsonIgnore
-    @Column(name = "wallet_id", nullable = false)
-    private int walletId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "timestamp", nullable = false)
     private Date timestamp;
 
-    @Column(name = "deposit", nullable = false)
-    private double deposit;
-
-    @Column(name = "withdrawal", nullable = false)
-    private double withdrawal;
-
-    public Transaction(int walletId, double deposit, double withdrawal, TransactionType transactionType, String reference) {
-        this.walletId = walletId;
-        this.deposit = deposit;
-        this.withdrawal = withdrawal;
+    public Transaction(double amount, TransactionType transactionType) {
+        this.amount = amount;
         this.transactionType = transactionType;
-        this.reference = reference;
         this.timestamp = new Date();
     }
 
