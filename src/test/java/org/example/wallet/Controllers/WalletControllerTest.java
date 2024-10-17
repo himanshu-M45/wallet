@@ -54,7 +54,7 @@ class WalletControllerTest {
 
     @Test
     void testDepositUserNotAuthenticated() throws Exception {
-        Mockito.doThrow(new UserNotAuthenticatedException("user not authenticated"))
+        Mockito.doThrow(new UserNotAutorisedException("user not authorised"))
                 .when(userService).isUserAuthorized(anyInt(), anyInt());
 
         mockMvc.perform(post("/wallets/1/deposit")
@@ -62,7 +62,7 @@ class WalletControllerTest {
                         .content("{\"userId\":10, \"amount\":100.0}"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.statusCode").value(422))
-                .andExpect(jsonPath("$.message").value("user not authenticated"))
+                .andExpect(jsonPath("$.message").value("user not authorised"))
                 .andExpect(jsonPath("$.data").isEmpty());
 
         verify(userService, times(1)).isUserAuthorized(anyInt(), anyInt());

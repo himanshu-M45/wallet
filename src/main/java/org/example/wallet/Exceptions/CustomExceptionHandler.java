@@ -28,8 +28,8 @@ public class CustomExceptionHandler {
                 .body(new ResponseDTO<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null));
     }
 
-    @ExceptionHandler(UserNotAuthenticatedException.class)
-    public ResponseEntity<ResponseDTO<String>> handleUserNotAuthenticatedException(UserNotAuthenticatedException e) {
+    @ExceptionHandler(UserNotAutorisedException.class)
+    public ResponseEntity<ResponseDTO<String>> handleUserNotAuthenticatedException(UserNotAutorisedException e) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(new ResponseDTO<>(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(), null));
     }

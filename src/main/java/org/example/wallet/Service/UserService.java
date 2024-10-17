@@ -1,7 +1,7 @@
 package org.example.wallet.Service;
 
 import org.example.wallet.Enums.CurrencyType;
-import org.example.wallet.Exceptions.UserNotAuthenticatedException;
+import org.example.wallet.Exceptions.UserNotAutorisedException;
 import org.example.wallet.Exceptions.UserNotAuthorizedException;
 import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Models.User;
@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
         if (userRepository.findWalletIdByUserId(userId).equals(walletId) && checkUserAuthorization(userId)) {
             return;
         }
-        throw new UserNotAuthorizedException("user not authorized");
+        throw new UserNotAuthorizedException("user not authenticated");
     }
 
     private User getAuthenticatedUser() {
@@ -66,6 +66,6 @@ public class UserService implements UserDetailsService {
         if (user != null && authenticatedUser != null) {
             return authenticatedUser == user;
         }
-        throw new UserNotAuthenticatedException("user not authenticated");
+        throw new UserNotAutorisedException("user not authorised");
     }
 }
