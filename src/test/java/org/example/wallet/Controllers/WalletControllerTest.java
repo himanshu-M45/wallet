@@ -19,8 +19,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(WalletController.class)
 @Import(TestSecurityConfig.class)
@@ -46,7 +45,9 @@ class WalletControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1, \"amount\":100.0}"))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("user not authorized"));
+                .andExpect(jsonPath("$.statusCode").value(401))
+                .andExpect(jsonPath("$.message").value("user not authorized"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(userService, times(1)).isUserAuthorized(anyInt(), anyInt());
     }
@@ -60,7 +61,9 @@ class WalletControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":10, \"amount\":100.0}"))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().string("user not authenticated"));
+                .andExpect(jsonPath("$.statusCode").value(422))
+                .andExpect(jsonPath("$.message").value("user not authenticated"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(userService, times(1)).isUserAuthorized(anyInt(), anyInt());
     }
@@ -73,7 +76,9 @@ class WalletControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":100.0}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("200.0"));
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.message").value("deposit successful"))
+                .andExpect(jsonPath("$.data").value(200.0));
 
         verify(walletService, times(1)).deposit(anyInt(), anyDouble());
     }
@@ -81,13 +86,15 @@ class WalletControllerTest {
     @Test
     public void testDeposit_InvalidAmount() throws Exception {
         Mockito.when(walletService.deposit(anyInt(), anyDouble()))
-                .thenThrow(new InvalidAmountEnteredException("Deposit amount cannot be negative or zero"));
+                .thenThrow(new InvalidAmountEnteredException("deposit amount cannot be negative or zero"));
 
         mockMvc.perform(post("/wallets/2/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":2,\"amount\":0.0}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Deposit amount cannot be negative or zero"));
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("deposit amount cannot be negative or zero"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).deposit(anyInt(), anyDouble());
     }
@@ -95,13 +102,15 @@ class WalletControllerTest {
     @Test
     public void testDeposit_WalletNotFound() throws Exception {
         Mockito.when(walletService.deposit(anyInt(), anyDouble()))
-                .thenThrow(new WalletNotFoundException("Wallet not found"));
+                .thenThrow(new WalletNotFoundException("wallet not found"));
 
         mockMvc.perform(post("/wallets/2/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":2,\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Wallet not found"));
+                .andExpect(jsonPath("$.statusCode").value(404))
+                .andExpect(jsonPath("$.message").value("wallet not found"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).deposit(anyInt(), anyDouble());
     }
@@ -114,7 +123,9 @@ class WalletControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":50.0}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("150.0"));
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.message").value("withdrawal successful"))
+                .andExpect(jsonPath("$.data").value(150.0));
 
         verify(walletService, times(1)).withdrawal(anyInt(), anyDouble());
     }
@@ -122,13 +133,15 @@ class WalletControllerTest {
     @Test
     public void testWithdrawal_InvalidAmount() throws Exception {
         when(walletService.withdrawal(anyInt(), anyDouble()))
-                .thenThrow(new InvalidAmountEnteredException("Withdrawal amount cannot be negative or zero"));
+                .thenThrow(new InvalidAmountEnteredException("withdrawal amount cannot be negative or zero"));
 
         mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":-50.0}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Withdrawal amount cannot be negative or zero"));
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("withdrawal amount cannot be negative or zero"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).withdrawal(anyInt(), anyDouble());
     }
@@ -136,13 +149,15 @@ class WalletControllerTest {
     @Test
     public void testWithdrawal_InsufficientBalance() throws Exception {
         when(walletService.withdrawal(anyInt(), anyDouble()))
-                .thenThrow(new InsufficientBalanceException("Insufficient balance"));
+                .thenThrow(new InsufficientBalanceException("insufficient balance"));
 
         mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":1000.0}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Insufficient balance"));
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("insufficient balance"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).withdrawal(anyInt(), anyDouble());
     }
@@ -150,13 +165,15 @@ class WalletControllerTest {
     @Test
     public void testWithdrawal_WalletNotFound() throws Exception {
         when(walletService.withdrawal(anyInt(), anyDouble()))
-                .thenThrow(new WalletNotFoundException("Wallet not found"));
+                .thenThrow(new WalletNotFoundException("wallet not found"));
 
         mockMvc.perform(post("/wallets/2/withdrawal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Wallet not found"));
+                .andExpect(jsonPath("$.statusCode").value(404))
+                .andExpect(jsonPath("$.message").value("wallet not found"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).withdrawal(anyInt(), anyDouble());
     }
@@ -165,24 +182,28 @@ class WalletControllerTest {
     public void testGetBalance_Success() throws Exception {
         when(walletService.getBalance(anyInt())).thenReturn(300.0);
 
-        mockMvc.perform(get("/wallets/2/balance")
+        mockMvc.perform(get("/wallets/1/balance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("300.0"));
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.message").value("balance fetched successfully"))
+                .andExpect(jsonPath("$.data").value(300.0));
 
         verify(walletService, times(1)).getBalance(anyInt());
     }
 
     @Test
     public void testGetBalance_WalletNotFound() throws Exception {
-        when(walletService.getBalance(anyInt())).thenThrow(new WalletNotFoundException("Wallet not found"));
+        when(walletService.getBalance(anyInt())).thenThrow(new WalletNotFoundException("wallet not found"));
 
         mockMvc.perform(get("/wallets/7/balance")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1}"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Wallet not found"));
+                .andExpect(jsonPath("$.statusCode").value(404))
+                .andExpect(jsonPath("$.message").value("wallet not found"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).getBalance(anyInt());
     }
@@ -196,7 +217,8 @@ class WalletControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":100.0,\"receiverId\":2}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("transfer successful"));
+                .andExpect(jsonPath("$.statusCode").value(200))
+                .andExpect(jsonPath("$.message").value("transfer successful"));
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -204,13 +226,15 @@ class WalletControllerTest {
     @Test
     void testTransferInsufficientFunds() throws Exception {
         Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble()))
-                .thenThrow(new InsufficientBalanceException("Insufficient balance"));
+                .thenThrow(new InsufficientBalanceException("insufficient balance"));
 
         mockMvc.perform(post("/wallets/1/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":1000.0,\"receiverId\":2}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Insufficient balance"));
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("insufficient balance"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -218,13 +242,15 @@ class WalletControllerTest {
     @Test
     void testTransferWalletNotFound() throws Exception {
         Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble()))
-                .thenThrow(new WalletNotFoundException("Wallet not found"));
+                .thenThrow(new WalletNotFoundException("wallet not found"));
 
         mockMvc.perform(post("/wallets/15/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":100.0,\"receiverId\":24}"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Wallet not found"));
+                .andExpect(jsonPath("$.statusCode").value(404))
+                .andExpect(jsonPath("$.message").value("wallet not found"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -232,26 +258,30 @@ class WalletControllerTest {
     @Test
     void testTransferInvalidAmount() throws Exception {
         Mockito.when(walletService.transfer(anyInt(), anyInt(), anyDouble()))
-                .thenThrow(new InvalidAmountEnteredException("Invalid amount entered"));
+                .thenThrow(new InvalidAmountEnteredException("invalid amount entered"));
 
         mockMvc.perform(post("/wallets/1/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":0.0,\"receiverId\":2}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid amount entered"));
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("invalid amount entered"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
 
     @Test
     void testTransferGenericException() throws Exception {
-        doThrow(new RuntimeException("An error occurred")).when(walletService).transfer(anyInt(), anyInt(), anyDouble());
+        doThrow(new RuntimeException("an error occurred")).when(walletService).transfer(anyInt(), anyInt(), anyDouble());
 
         mockMvc.perform(post("/wallets/1/transfers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":100.0,\"receiverId\":2}"))
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().string("An error occurred"));
+                .andExpect(jsonPath("$.statusCode").value(500))
+                .andExpect(jsonPath("$.message").value("an error occurred"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }

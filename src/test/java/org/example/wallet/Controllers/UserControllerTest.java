@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(UserController.class)
 @Import(TestSecurityConfig.class)
@@ -38,13 +38,14 @@ public class UserControllerTest {
     @Test
     public void testRegister_Success() throws Exception {
         Mockito.when(userService.register("testUser", "testPassword", CurrencyType.INR))
-                .thenReturn("User registered successfully");
+                .thenReturn("user registered successfully");
 
         mockMvc.perform(post("/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("User registered successfully"));
+                .andExpect(jsonPath("$.statusCode").value(201))
+                .andExpect(jsonPath("$.message").value("user registered successfully"));
 
         verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
     }
@@ -58,7 +59,9 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("name, password, currencyType cannot be null or empty"));
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("name, password, currencyType cannot be null or empty"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
     }
@@ -72,7 +75,9 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("username already exists"));
+                .andExpect(jsonPath("$.statusCode").value(409))
+                .andExpect(jsonPath("$.message").value("username already exists"))
+                .andExpect(jsonPath("$.data").isEmpty());
 
         verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
     }

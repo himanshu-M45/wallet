@@ -1,6 +1,5 @@
 package org.example.wallet.Controllers;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.example.wallet.DTO.ResponseDTO;
 import org.example.wallet.DTO.TransactionDTO;
 import org.example.wallet.DTO.WalletDTO;
@@ -20,17 +19,17 @@ public class WalletController {
     private UserService userService;
 
     @PostMapping("/deposit")
-    public ResponseEntity<ResponseDTO<Double>> deposit(@PathVariable int walletId, @RequestBody WalletDTO payload, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<ResponseDTO<Double>> deposit(@PathVariable int walletId, @RequestBody WalletDTO payload) {
         userService.isUserAuthorized(payload.getUserId(), walletId);
         double balance = walletService.deposit(walletId, payload.getAmount());
-        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "Deposit successful", balance));
+        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "deposit successful", balance));
     }
 
     @PostMapping("/withdrawal")
     public ResponseEntity<ResponseDTO<Double>> withdrawal(@PathVariable int walletId, @RequestBody WalletDTO payload) {
         userService.isUserAuthorized(payload.getUserId(), walletId);
         double balance = walletService.withdrawal(walletId, payload.getAmount());
-        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "Withdrawal successful", balance));
+        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "withdrawal successful", balance));
     }
 
     @PostMapping("/transfers")
@@ -44,6 +43,6 @@ public class WalletController {
     public ResponseEntity<ResponseDTO<Double>> balance(@PathVariable int walletId, @RequestBody TransactionDTO payload) {
         userService.isUserAuthorized(payload.getUserId(), walletId);
         double balance = walletService.getBalance(walletId);
-        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "Balance fetched successfully", balance));
+        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "balance fetched successfully", balance));
     }
 }
