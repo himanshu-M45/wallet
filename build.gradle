@@ -1,34 +1,35 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.4'
-	id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'org.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.postgresql:postgresql'
-	implementation 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-	runtimeOnly 'com.h2database:h2'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web' //	spring boot web
+    testImplementation 'org.springframework.boot:spring-boot-starter-test' // spring boot test
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' //	junit
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' //	jpa
+    implementation 'org.postgresql:postgresql' //	postgresql
+    implementation 'org.projectlombok:lombok:1.18.24' //	lombok
+    annotationProcessor 'org.projectlombok:lombok:1.18.24' //	lombok
+    runtimeOnly 'com.h2database:h2' //	h2 database
+    implementation 'org.springframework.boot:spring-boot-starter-security' //	spring security
+    implementation 'org.liquibase:liquibase-core:4.20.0' //	liquibase
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
