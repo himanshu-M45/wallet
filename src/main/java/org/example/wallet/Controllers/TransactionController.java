@@ -1,5 +1,6 @@
 package org.example.wallet.Controllers;
 
+import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Service.TransactionService;
 import org.example.wallet.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,11 @@ public class TransactionController {
     private UserService userService;
 
     @GetMapping("/transactions")
-    public ResponseEntity<Object> transactions(@PathVariable int userId, @PathVariable int walletId) {
+    public ResponseEntity<Object> transactions(@PathVariable int userId, @PathVariable int walletId, @RequestParam(required = false) TransactionType type) {
         userService.isUserAuthorized(userId, walletId);
+        if (type != null) {
+            return ResponseEntity.ok(transactionService.getTransactionsByType(walletId, type));
+        }
         return ResponseEntity.ok(transactionService.getTransactionsByWalletId(walletId));
     }
 }

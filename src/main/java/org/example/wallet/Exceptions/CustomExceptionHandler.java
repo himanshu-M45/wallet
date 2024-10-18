@@ -28,8 +28,8 @@ public class CustomExceptionHandler {
                 .body(new ResponseDTO<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null));
     }
 
-    @ExceptionHandler(UserNotAutorisedException.class)
-    public ResponseEntity<ResponseDTO<String>> handleUserNotAuthenticatedException(UserNotAutorisedException e) {
+    @ExceptionHandler(UserNotAuthenticatedException.class)
+    public ResponseEntity<ResponseDTO<String>> handleUserNotAuthenticatedException(UserNotAuthenticatedException e) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .body(new ResponseDTO<>(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(), null));
     }
@@ -56,6 +56,18 @@ public class CustomExceptionHandler {
     public ResponseEntity<ResponseDTO<String>> handleWalletNotFoundException(WalletNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseDTO<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null));
+    }
+
+    @ExceptionHandler(NoTransactionFoundException.class)
+    public ResponseEntity<ResponseDTO<String>> handleNoTransactionFoundException(NoTransactionFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseDTO<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null));
+    }
+
+    @ExceptionHandler(InvalidTransactionTypeException.class)
+    public ResponseEntity<ResponseDTO<String>> handleInvalidTransactionTypeException(InvalidTransactionTypeException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ResponseDTO<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null));
     }
 
     @ExceptionHandler(RuntimeException.class)
