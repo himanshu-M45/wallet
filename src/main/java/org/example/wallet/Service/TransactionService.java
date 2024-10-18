@@ -43,21 +43,30 @@ public class TransactionService {
         return allTransactions;
     }
 
-    public List<Transaction> getTransactionsByType(int walletId, TransactionType transactionType) {
-        if (transactionType == TransactionType.TRANSFER) {
-            List<Transaction> transferTransaction = transactionRepository.findTransferTransactionsByTypeAndWalletId(transactionType, walletId);
-            if (transferTransaction.isEmpty()) {
-                throw new NoTransactionFoundException("no transactions found for walletId: " + walletId);
-            }
-            return transferTransaction;
+    public List<Transaction> getTransactionsByType(int walletId, String transactionType) {
+        TransactionType type;
+        try {
+            type = TransactionType.valueOf(transactionType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidTransactionTypeException("invalid transaction type: " + transactionType);
         }
-        if (transactionType == TransactionType.WITHDRAWAL || transactionType == TransactionType.DEPOSIT) {
-            List<Transaction> walletTransaction = transactionRepository.findWalletTransactionsByTypeAndWalletId(transactionType, walletId);
-            if (walletTransaction.isEmpty()) {
-                throw new NoTransactionFoundException("no transactions found for walletId: " + walletId);
-            }
-            return walletTransaction;
+
+        switch (type) {
+            case TRANSFER:
+                List<Transaction> transferTransactions = transactionRepository.findTransferTransactionsByTypeAndWalletId(type, walletId);
+                if (transferTransactions.isEmpty()) {
+                    throw new NoTransactionFoundException("no transactions found for walletId: " + walletId);
+                }
+                return transferTransactions;
+            case WITHDRAWAL:
+            case DEPOSIT:
+                List<Transaction> walletTransactions = transactionRepository.findWalletTransactionsByTypeAndWalletId(type, walletId);
+                if (walletTransactions.isEmpty()) {
+                    throw new NoTransactionFoundException("no transactions found for walletId: " + walletId);
+                }
+                return walletTransactions;
+            default:
+                throw new InvalidTransactionTypeException("invalid transaction type: " + transactionType);
         }
-        throw new InvalidTransactionTypeException("invalid transaction type: " + transactionType);
     }
 }

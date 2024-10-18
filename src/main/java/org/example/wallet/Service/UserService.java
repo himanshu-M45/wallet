@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void isUserAuthorized(Integer userId, Integer walletId) {
-        if (userRepository.findWalletIdByUserId(userId).equals(walletId) && checkUserAuthorization(userId)) {
+        if (userRepository.findWalletIdByUserId(userId).equals(walletId) && checkUserAuthentication(userId)) {
             return;
         }
         throw new UserNotAuthorizedException("user not authorised");
@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(userDetails.getUsername()).orElse(null);
     }
 
-    private boolean checkUserAuthorization(Integer userId) {
+    private boolean checkUserAuthentication(Integer userId) {
         User authenticatedUser = getAuthenticatedUser();
         User user = findById(userId);
         if (user != null && authenticatedUser != null) {

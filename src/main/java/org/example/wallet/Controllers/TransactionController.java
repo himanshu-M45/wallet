@@ -43,7 +43,7 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<Object> transactions(@PathVariable int userId, @PathVariable int walletId, @RequestParam(required = false) TransactionType type) {
+    public ResponseEntity<Object> transactions(@PathVariable int userId, @PathVariable int walletId, @RequestParam(required = false) String type) {
         userService.isUserAuthorized(userId, walletId);
         if (type != null) {
             return ResponseEntity.ok(transactionService.getTransactionsByType(walletId, type));

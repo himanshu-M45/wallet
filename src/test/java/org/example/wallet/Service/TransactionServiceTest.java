@@ -51,65 +51,62 @@ class TransactionServiceTest {
 
     @Test
     void testGetTransactionsByType_Transfer() {
-        int walletId = 1;
-        TransactionType transactionType = TransactionType.TRANSFER;
         List<Transaction> transferTransactions = List.of(new TransferTransaction());
 
-        when(transactionRepository.findTransferTransactionsByTypeAndWalletId(transactionType, walletId)).thenReturn(transferTransactions);
+        when(transactionRepository.findTransferTransactionsByTypeAndWalletId(TransactionType.TRANSFER, 1))
+                .thenReturn(transferTransactions);
 
-        List<Transaction> transactions = transactionService.getTransactionsByType(walletId, transactionType);
+        List<Transaction> transactions = transactionService.getTransactionsByType(1, "TRANSFER");
         assertNotNull(transactions);
         assertFalse(transactions.isEmpty());
 
-        verify(transactionRepository, times(1)).findTransferTransactionsByTypeAndWalletId(transactionType, walletId);
+        verify(transactionRepository, times(1))
+                .findTransferTransactionsByTypeAndWalletId(TransactionType.TRANSFER, 1);
     }
 
     @Test
     void testGetTransactionsByType_Deposit() {
-        int walletId = 1;
-        TransactionType transactionType = TransactionType.DEPOSIT;
         List<Transaction> depositTransactions = List.of(new WalletTransaction());
 
-        when(transactionRepository.findWalletTransactionsByTypeAndWalletId(transactionType, walletId)).thenReturn(depositTransactions);
+        when(transactionRepository.findWalletTransactionsByTypeAndWalletId(TransactionType.DEPOSIT, 1))
+                .thenReturn(depositTransactions);
 
-        List<Transaction> transactions = transactionService.getTransactionsByType(walletId, transactionType);
+        List<Transaction> transactions = transactionService.getTransactionsByType(1, "DEPOSIT");
         assertNotNull(transactions);
         assertFalse(transactions.isEmpty());
 
-        verify(transactionRepository, times(1)).findWalletTransactionsByTypeAndWalletId(transactionType, walletId);
+        verify(transactionRepository, times(1))
+                .findWalletTransactionsByTypeAndWalletId(TransactionType.DEPOSIT, 1);
     }
 
     @Test
     void testGetTransactionsByType_Withdrawals() {
-        int walletId = 1;
-        TransactionType transactionType = TransactionType.WITHDRAWAL;
         List<Transaction> withdrawalTransactions = List.of(new WalletTransaction());
 
-        when(transactionRepository.findWalletTransactionsByTypeAndWalletId(transactionType, walletId)).thenReturn(withdrawalTransactions);
+        when(transactionRepository.findWalletTransactionsByTypeAndWalletId(TransactionType.WITHDRAWAL, 1))
+                .thenReturn(withdrawalTransactions);
 
-        List<Transaction> transactions = transactionService.getTransactionsByType(walletId, transactionType);
+        List<Transaction> transactions = transactionService.getTransactionsByType(1, "WITHDRAWAL");
         assertNotNull(transactions);
         assertFalse(transactions.isEmpty());
 
-        verify(transactionRepository, times(1)).findWalletTransactionsByTypeAndWalletId(transactionType, walletId);
+        verify(transactionRepository, times(1))
+                .findWalletTransactionsByTypeAndWalletId(TransactionType.WITHDRAWAL, 1);
     }
 
     @Test
     void testGetTransactionsByType_InvalidType() {
         assertThrows(InvalidTransactionTypeException.class, () -> {
-            transactionService.getTransactionsByType(1, null);
+            transactionService.getTransactionsByType(1, "INVALID");
         });
     }
 
     @Test
     void testGetTransactionsByType_NoTransactionsFound() {
-        int walletId = 1;
-        TransactionType transactionType = TransactionType.TRANSFER;
-
-        when(transactionRepository.findTransferTransactionsByTypeAndWalletId(transactionType, walletId)).thenReturn(new ArrayList<>());
+        when(transactionRepository.findTransferTransactionsByTypeAndWalletId(TransactionType.TRANSFER, 1)).thenReturn(new ArrayList<>());
 
         assertThrows(NoTransactionFoundException.class, () -> {
-            transactionService.getTransactionsByType(walletId, transactionType);
+            transactionService.getTransactionsByType(1, "TRANSFER");
         });
     }
 }

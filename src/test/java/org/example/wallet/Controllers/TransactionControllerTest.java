@@ -55,7 +55,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/1/wallets/10/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"userId\":1, \"amount\":100.0}"))
+                        .content("{\"amount\":100.0}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.statusCode").value(401))
                 .andExpect(jsonPath("$.message").value("user not authorized"))
@@ -70,7 +70,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/1/wallets/1/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":1,\"amount\":100.0}"))
+                        .content("{\"amount\":100.0}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statusCode").value(200))
                 .andExpect(jsonPath("$.message").value("deposit successful"))
@@ -86,7 +86,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/2/wallets/2/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":2,\"amount\":0.0}"))
+                        .content("{\"amount\":0.0}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andExpect(jsonPath("$.message").value("deposit amount cannot be negative or zero"))
@@ -102,7 +102,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/2/wallets/2/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":2,\"amount\":100.0}"))
+                        .content("{\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").value(404))
                 .andExpect(jsonPath("$.message").value("wallet not found"))
@@ -117,7 +117,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/4/wallets/4/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":1,\"amount\":50.0}"))
+                        .content("{\"amount\":50.0}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statusCode").value(200))
                 .andExpect(jsonPath("$.message").value("withdrawal successful"))
@@ -133,7 +133,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/2/wallets/2/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":1,\"amount\":-50.0}"))
+                        .content("{\"amount\":-50.0}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andExpect(jsonPath("$.message").value("withdrawal amount cannot be negative or zero"))
@@ -149,7 +149,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/2/wallets/2/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":1,\"amount\":1000.0}"))
+                        .content("{\"amount\":1000.0}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
                 .andExpect(jsonPath("$.message").value("insufficient balance"))
@@ -165,7 +165,7 @@ class TransactionControllerTest {
 
         mockMvc.perform(post("/users/2/wallets/2/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":1,\"amount\":100.0}"))
+                        .content("{\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").value(404))
                 .andExpect(jsonPath("$.message").value("wallet not found"))
@@ -272,17 +272,45 @@ class TransactionControllerTest {
     void testGetTransactionsByTransferType() throws Exception {
         int userId = 1;
         int walletId = 1;
-        TransactionType type = TransactionType.TRANSFER;
 
-        when(transactionService.getTransactionsByType(walletId, type)).thenReturn(Collections.emptyList());
+        when(transactionService.getTransactionsByType(walletId, "TRANSFER")).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/users/{userId}/wallets/{walletId}/transactions", userId, walletId)
-                        .param("type", type.toString()))
+                        .param("type", "TRANSFER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
 
         verify(userService, times(1)).isUserAuthorized(userId, walletId);
-        verify(transactionService, times(1)).getTransactionsByType(walletId, type);
+        verify(transactionService, times(1)).getTransactionsByType(walletId, "TRANSFER");
+    }
+
+    @Test
+    void testNoTransactionFoundException() throws Exception {
+        doThrow(new NoTransactionFoundException("no transactions found"))
+                .when(transactionService).getTransactionsByWalletId(anyInt());
+
+        mockMvc.perform(get("/users/1/wallets/1/transactions"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.statusCode").value(404))
+                .andExpect(jsonPath("$.message").value("no transactions found"))
+                .andExpect(jsonPath("$.data").isEmpty());
+
+        verify(transactionService, times(1)).getTransactionsByWalletId(anyInt());
+    }
+
+    @Test
+    void testInvalidTransactionTypeException() throws Exception {
+        doThrow(new InvalidTransactionTypeException("invalid transaction type"))
+                .when(transactionService).getTransactionsByType(anyInt(), any());
+
+        mockMvc.perform(get("/users/1/wallets/1/transactions")
+                        .param("type", "INVALID"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("invalid transaction type"))
+                .andExpect(jsonPath("$.data").isEmpty());
+
+        verify(transactionService, times(1)).getTransactionsByType(anyInt(), any());
     }
 }
