@@ -3,7 +3,6 @@ package org.example.wallet.Controllers;
 import org.example.wallet.DTO.ResponseDTO;
 import org.example.wallet.DTO.TransactionDTO;
 import org.example.wallet.DTO.WalletDTO;
-import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Models.Transaction;
 import org.example.wallet.Service.TransactionService;
 import org.example.wallet.Service.UserService;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users/{userId}/wallets/{walletId}")
@@ -48,15 +46,29 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<Object> transactions(@PathVariable int userId, @PathVariable int walletId, @RequestParam(required = false) String type) {
+    public ResponseEntity<Object> transactions(
+            @PathVariable int userId,
+            @PathVariable int walletId,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder
+    ) {
         userService.isUserAuthorized(userId, walletId);
-        if (type != null) {
-            List<Transaction> transactions = transactionService.getTransactionsByType(walletId, type);
-            List<TransactionDTO> transactionDTO = transactions.stream()
-                    .map(transactionService::convertToDTO)
-                    .toList();
-            return ResponseEntity.ok(transactionDTO);
+        List<Transaction> transactions;
+
+        if (type != null && !type.isEmpty()) {
+            transactions = transactionService.getTransactionsByType(walletId, type);
+        } else {
+            transactions = transactionService.getTransactionsByWalletId(walletId);
         }
-        return ResponseEntity.ok(transactionService.getTransactionsByWalletId(walletId));
+
+        if (sortBy != null && sortOrder != null && !sortBy.isEmpty() && !sortOrder.isEmpty()) {
+            transactions = transactionService.getSortedTransactions(transactions, sortBy, sortOrder);
+        }
+
+        List<TransactionDTO> transactionDTOs = transactions.stream()
+                .map(transactionService::convertToDTO)
+                .toList();
+        return ResponseEntity.ok(transactionDTOs);
     }
 }

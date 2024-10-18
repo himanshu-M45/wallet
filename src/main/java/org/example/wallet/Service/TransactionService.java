@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -70,6 +72,23 @@ public class TransactionService {
             default:
                 throw new InvalidTransactionTypeException("invalid transaction type: " + transactionType);
         }
+    }
+
+    public List<Transaction> getSortedTransactions(List<Transaction> transactions, String sortBy, String sortOrder) {
+        Comparator<Transaction> comparator = switch (sortBy.toLowerCase()) {
+            case "time" -> Comparator.comparing(Transaction::getTimestamp);
+            case "id" -> Comparator.comparing(Transaction::getId);
+            case "amount" -> Comparator.comparing(Transaction::getAmount);
+            default -> throw new IllegalArgumentException("Invalid sortBy parameter: " + sortBy);
+        };
+
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            comparator = comparator.reversed();
+        }
+
+        return transactions.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
     }
 
     public TransactionDTO convertToDTO(Transaction transaction) {
