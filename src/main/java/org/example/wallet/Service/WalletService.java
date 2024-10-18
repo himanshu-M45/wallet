@@ -61,12 +61,4 @@ public class WalletService {
         }
         throw new WalletNotFoundException("wallet not found");
     }
-
-    public double getBalance(int walletId) {
-        Wallet wallet = findWalletById(walletId);
-        if (wallet != null) {
-            return wallet.getBalance();
-        }
-        throw new WalletNotFoundException("wallet not found");
-    }
 }

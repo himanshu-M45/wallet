@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -41,7 +40,7 @@ class WalletControllerTest {
         Mockito.doThrow(new UserNotAuthorizedException("user not authorized"))
                 .when(userService).isUserAuthorized(anyInt(), anyInt());
 
-        mockMvc.perform(post("/users/10/wallets/10/deposit")
+        mockMvc.perform(post("/users/10/wallets/10/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"userId\":1, \"amount\":100.0}"))
                 .andExpect(status().isUnauthorized())
@@ -56,7 +55,7 @@ class WalletControllerTest {
     public void testDeposit_Success() throws Exception {
         Mockito.when(walletService.deposits(anyInt(), anyDouble())).thenReturn("updated balance: 200.0");
 
-        mockMvc.perform(post("/users/1/wallets/1/deposit")
+        mockMvc.perform(post("/users/1/wallets/1/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":100.0}"))
                 .andExpect(status().isOk())
@@ -72,7 +71,7 @@ class WalletControllerTest {
         Mockito.when(walletService.deposits(anyInt(), anyDouble()))
                 .thenThrow(new InvalidAmountEnteredException("deposit amount cannot be negative or zero"));
 
-        mockMvc.perform(post("/users/2/wallets/2/deposit")
+        mockMvc.perform(post("/users/2/wallets/2/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":2,\"amount\":0.0}"))
                 .andExpect(status().isBadRequest())
@@ -88,7 +87,7 @@ class WalletControllerTest {
         Mockito.when(walletService.deposits(anyInt(), anyDouble()))
                 .thenThrow(new WalletNotFoundException("wallet not found"));
 
-        mockMvc.perform(post("/users/2/wallets/2/deposit")
+        mockMvc.perform(post("/users/2/wallets/2/deposits")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":2,\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
@@ -103,7 +102,7 @@ class WalletControllerTest {
     public void testWithdrawal_Success() throws Exception {
         Mockito.when(walletService.withdrawals(anyInt(), anyDouble())).thenReturn("updated balance: 150.0");
 
-        mockMvc.perform(post("/users/4/wallets/4/withdrawal")
+        mockMvc.perform(post("/users/4/wallets/4/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":50.0}"))
                 .andExpect(status().isOk())
@@ -119,7 +118,7 @@ class WalletControllerTest {
         when(walletService.withdrawals(anyInt(), anyDouble()))
                 .thenThrow(new InvalidAmountEnteredException("withdrawal amount cannot be negative or zero"));
 
-        mockMvc.perform(post("/users/2/wallets/2/withdrawal")
+        mockMvc.perform(post("/users/2/wallets/2/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":-50.0}"))
                 .andExpect(status().isBadRequest())
@@ -135,7 +134,7 @@ class WalletControllerTest {
         when(walletService.withdrawals(anyInt(), anyDouble()))
                 .thenThrow(new InsufficientBalanceException("insufficient balance"));
 
-        mockMvc.perform(post("/users/2/wallets/2/withdrawal")
+        mockMvc.perform(post("/users/2/wallets/2/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":1000.0}"))
                 .andExpect(status().isBadRequest())
@@ -151,7 +150,7 @@ class WalletControllerTest {
         when(walletService.withdrawals(anyInt(), anyDouble()))
                 .thenThrow(new WalletNotFoundException("wallet not found"));
 
-        mockMvc.perform(post("/users/2/wallets/2/withdrawal")
+        mockMvc.perform(post("/users/2/wallets/2/withdrawals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\":1,\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
@@ -160,36 +159,6 @@ class WalletControllerTest {
                 .andExpect(jsonPath("$.data").isEmpty());
 
         verify(walletService, times(1)).withdrawals(anyInt(), anyDouble());
-    }
-
-    @Test
-    public void testGetBalance_Success() throws Exception {
-        when(walletService.getBalance(anyInt())).thenReturn(300.0);
-
-        mockMvc.perform(get("/users/1/wallets/1/balance")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":1}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.message").value("balance fetched successfully"))
-                .andExpect(jsonPath("$.data").value(300.0));
-
-        verify(walletService, times(1)).getBalance(anyInt());
-    }
-
-    @Test
-    public void testGetBalance_WalletNotFound() throws Exception {
-        when(walletService.getBalance(anyInt())).thenThrow(new WalletNotFoundException("wallet not found"));
-
-        mockMvc.perform(get("/users/7/wallets/7/balance")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"walletId\":1}"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.statusCode").value(404))
-                .andExpect(jsonPath("$.message").value("wallet not found"))
-                .andExpect(jsonPath("$.data").isEmpty());
-
-        verify(walletService, times(1)).getBalance(anyInt());
     }
 
     @Test

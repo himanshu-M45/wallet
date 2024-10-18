@@ -15,17 +15,6 @@ class WalletServiceTest {
     private WalletService walletService;
 
     @Test
-    void testGetBalanceOfStoredUser() {
-        double balance = walletService.getBalance(1);
-        assertEquals(698, balance);
-    }
-
-    @Test
-    void testGetBalanceOfNonStoredUser() {
-        assertThrows(WalletNotFoundException.class, () -> walletService.getBalance(0));
-    }
-
-    @Test
     void testDepositsToNonStoredUser() {
         assertThrows(WalletNotFoundException.class, () -> walletService.deposits(0, 100));
     }

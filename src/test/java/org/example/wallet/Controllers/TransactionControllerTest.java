@@ -55,7 +55,7 @@ class TransactionControllerTest {
     }
 
     @Test
-    void testGetTransactionsByType() throws Exception {
+    void testGetTransactionsByTransferType() throws Exception {
         int userId = 1;
         int walletId = 1;
         TransactionType type = TransactionType.TRANSFER;

@@ -17,14 +17,14 @@ public class WalletController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/deposit")
+    @PostMapping("/deposits")
     public ResponseEntity<ResponseDTO<String>> deposit(@PathVariable int userId, @PathVariable int walletId, @RequestBody WalletDTO payload) {
         userService.isUserAuthorized(userId, walletId);
         String response = walletService.deposits(walletId, payload.getAmount());
         return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "deposit successful", response));
     }
 
-    @PostMapping("/withdrawal")
+    @PostMapping("/withdrawals")
     public ResponseEntity<ResponseDTO<String>> withdrawal(@PathVariable int userId, @PathVariable int walletId, @RequestBody WalletDTO payload) {
         userService.isUserAuthorized(userId, walletId);
         String response = walletService.withdrawals(walletId, payload.getAmount());
@@ -36,12 +36,5 @@ public class WalletController {
         userService.isUserAuthorized(userId, walletId);
         String response = walletService.transfer(walletId, payload.getReceiverWalletId(), payload.getAmount());
         return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), response));
-    }
-
-    @GetMapping("/balance")
-    public ResponseEntity<ResponseDTO<Double>> balance(@PathVariable int userId, @PathVariable int walletId) {
-        userService.isUserAuthorized(userId, walletId);
-        double balance = walletService.getBalance(walletId);
-        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "balance fetched successfully", balance));
     }
 }
