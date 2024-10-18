@@ -1,6 +1,5 @@
 package org.example.wallet.Controllers;
 
-import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.*;
 import org.example.wallet.Service.TransactionService;
 import org.example.wallet.Service.UserService;
@@ -312,5 +311,82 @@ class TransactionControllerTest {
                 .andExpect(jsonPath("$.data").isEmpty());
 
         verify(transactionService, times(1)).getTransactionsByType(anyInt(), any());
+    }
+
+    @Test
+    void testGetTransactionsWithTypeAndSorting() throws Exception {
+        int userId = 1;
+        int walletId = 1;
+
+        when(transactionService.getTransactionsByType(walletId, "DEPOSIT")).thenReturn(Collections.emptyList());
+        when(transactionService.getSortedTransactions(anyList(), eq("date"), eq("asc"))).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/users/{userId}/wallets/{walletId}/transactions", userId, walletId)
+                        .param("type", "DEPOSIT")
+                        .param("sortBy", "date")
+                        .param("sortOrder", "asc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+
+        verify(userService, times(1)).isUserAuthorized(userId, walletId);
+        verify(transactionService, times(1)).getTransactionsByType(walletId, "DEPOSIT");
+        verify(transactionService, times(1)).getSortedTransactions(anyList(), eq("date"), eq("asc"));
+    }
+
+    @Test
+    void testGetTransactionsWithSortingOnly() throws Exception {
+        int userId = 1;
+        int walletId = 1;
+
+        when(transactionService.getTransactionsByWalletId(walletId)).thenReturn(Collections.emptyList());
+        when(transactionService.getSortedTransactions(anyList(), eq("date"), eq("asc"))).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/users/{userId}/wallets/{walletId}/transactions", userId, walletId)
+                        .param("sortBy", "date")
+                        .param("sortOrder", "asc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+
+        verify(userService, times(1)).isUserAuthorized(userId, walletId);
+        verify(transactionService, times(1)).getTransactionsByWalletId(walletId);
+        verify(transactionService, times(1)).getSortedTransactions(anyList(), eq("date"), eq("asc"));
+    }
+
+    @Test
+    void testGetTransactionsWithSortByOnly() throws Exception {
+        int userId = 1;
+        int walletId = 1;
+
+        when(transactionService.getTransactionsByWalletId(walletId)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/users/{userId}/wallets/{walletId}/transactions", userId, walletId)
+                        .param("sortBy", "date"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+
+        verify(userService, times(1)).isUserAuthorized(userId, walletId);
+        verify(transactionService, times(1)).getTransactionsByWalletId(walletId);
+        verify(transactionService, times(0)).getSortedTransactions(anyList(), eq("date"), eq(""));
+    }
+
+    @Test
+    void testGetTransactionsWithSortOrderOnly() throws Exception {
+        int userId = 1;
+        int walletId = 1;
+
+        when(transactionService.getTransactionsByWalletId(walletId)).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/users/{userId}/wallets/{walletId}/transactions", userId, walletId)
+                        .param("sortOrder", "asc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+
+        verify(userService, times(1)).isUserAuthorized(userId, walletId);
+        verify(transactionService, times(1)).getTransactionsByWalletId(walletId);
+        verify(transactionService, times(0)).getSortedTransactions(anyList(), eq(""), eq("asc"));
     }
 }
