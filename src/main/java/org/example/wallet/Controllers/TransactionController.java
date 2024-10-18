@@ -1,8 +1,10 @@
 package org.example.wallet.Controllers;
 
 import org.example.wallet.DTO.ResponseDTO;
+import org.example.wallet.DTO.TransactionDTO;
 import org.example.wallet.DTO.WalletDTO;
 import org.example.wallet.Enums.TransactionType;
+import org.example.wallet.Models.Transaction;
 import org.example.wallet.Service.TransactionService;
 import org.example.wallet.Service.UserService;
 import org.example.wallet.Service.WalletService;
@@ -10,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users/{userId}/wallets/{walletId}")
@@ -46,7 +51,11 @@ public class TransactionController {
     public ResponseEntity<Object> transactions(@PathVariable int userId, @PathVariable int walletId, @RequestParam(required = false) String type) {
         userService.isUserAuthorized(userId, walletId);
         if (type != null) {
-            return ResponseEntity.ok(transactionService.getTransactionsByType(walletId, type));
+            List<Transaction> transactions = transactionService.getTransactionsByType(walletId, type);
+            List<TransactionDTO> transactionDTO = transactions.stream()
+                    .map(transactionService::convertToDTO)
+                    .toList();
+            return ResponseEntity.ok(transactionDTO);
         }
         return ResponseEntity.ok(transactionService.getTransactionsByWalletId(walletId));
     }

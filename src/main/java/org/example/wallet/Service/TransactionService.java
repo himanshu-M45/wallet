@@ -1,5 +1,6 @@
 package org.example.wallet.Service;
 
+import org.example.wallet.DTO.TransactionDTO;
 import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.InvalidTransactionTypeException;
 import org.example.wallet.Exceptions.NoTransactionFoundException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -68,5 +70,21 @@ public class TransactionService {
             default:
                 throw new InvalidTransactionTypeException("invalid transaction type: " + transactionType);
         }
+    }
+
+    public TransactionDTO convertToDTO(Transaction transaction) {
+        TransactionDTO dto = new TransactionDTO();
+        dto.setId(transaction.getId());
+        dto.setAmount(transaction.getAmount());
+        dto.setTransactionType(transaction.getTransactionType().name());
+        dto.setTimestamp(transaction.getTimestamp());
+        if (transaction instanceof WalletTransaction walletTransaction) {
+            dto.setWalletId(Optional.of(walletTransaction.getWalletId()));
+        }
+        if (transaction instanceof TransferTransaction transferTransaction) {
+            dto.setSenderId(Optional.of(transferTransaction.getSenderId()));
+            dto.setReceiverId(Optional.of(transferTransaction.getReceiverId()));
+        }
+        return dto;
     }
 }
