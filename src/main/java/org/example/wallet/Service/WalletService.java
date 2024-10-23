@@ -1,5 +1,6 @@
 package org.example.wallet.Service;
 
+import com.example.wallet.grpc.CurrencyConverterGrpc;
 import jakarta.transaction.Transactional;
 import org.example.wallet.Enums.CurrencyType;
 import org.example.wallet.Enums.TransactionType;
@@ -15,6 +16,8 @@ public class WalletService {
     private WalletRepository walletRepository;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private CurrencyConverterService currencyConverterService;
 
     public Wallet findWalletById(int id) {
         return walletRepository.findById(id).orElse(null);
@@ -47,9 +50,10 @@ public class WalletService {
         Wallet receiverWallet = findWalletById(receiverWalletId);
 
         if (senderWallet != null && receiverWallet != null) {
-            // convert amount to receiver currency
-            CurrencyType receiverCurrency = receiverWallet.getCurrencyType();
-            double convertedAmount = senderWallet.getCurrencyType().convertTo(amount, receiverCurrency);
+            // convert amount to receiver currency through gRPC service
+            String senderCurrencyType = senderWallet.getCurrencyType().toString();
+            String receiverCurrencyType = receiverWallet.getCurrencyType().toString();
+            double convertedAmount = currencyConverterService.convertCurrency(amount, senderCurrencyType, receiverCurrencyType);
 
             // perform transaction
             senderWallet.withdrawal(amount);

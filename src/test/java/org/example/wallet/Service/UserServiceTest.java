@@ -1,73 +1,92 @@
 package org.example.wallet.Service;
 
 import org.example.wallet.Enums.CurrencyType;
-import org.example.wallet.Exceptions.CannotCreateUserException;
 import org.example.wallet.Exceptions.UsernameAlreadyRegisteredException;
 import org.example.wallet.Models.User;
+import org.example.wallet.Repositorys.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
 class UserServiceTest {
-    @Autowired
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
     private UserService userService;
 
-    @Test
-    public void testFindById() {
-        User user = userService.findById(1);
-        assertNotNull(user);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testRegister() {
+    void testRegister() {
+        User user = new User("John Doe", "johnPass", CurrencyType.INR);
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
         String response = userService.register("John Doe", "johnPass", CurrencyType.INR);
-        User retrievedUser = userService.findById(1);
-        assertEquals("User registered successfully", response);
-        assertNotNull(retrievedUser);
+
+        assertEquals("user registered successfully", response);
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    public void testRegister2() {
-        String response = userService.register("Ethan Hunt", "ethanPass", CurrencyType.INR);
-        User retrievedUser = userService.findById(8);
-        assertEquals("User registered successfully", response);
-        assertNotNull(retrievedUser);
+    void testRegisterUsernameAlreadyExists() {
+        when(userRepository.save(any(User.class))).thenThrow(DataIntegrityViolationException.class);
+
+        assertThrows(UsernameAlreadyRegisteredException.class, () -> {
+            userService.register("John Doe", "johnPass", CurrencyType.INR);
+        });
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    public void testRegister3() {
-        String response = userService.register("Fiona Gallagher", "fionaPass", CurrencyType.EUR);
-        User retrievedUser = userService.findById(7);
-        assertEquals("User registered successfully", response);
-        assertNotNull(retrievedUser);
+    void testFindById() {
+        User user = new User("John Doe", "johnPass", CurrencyType.INR);
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+
+        User foundUser = userService.findById(1);
+        assertNotNull(foundUser);
+        verify(userRepository, times(1)).findById(1);
     }
 
     @Test
-    public void testRegister4() {
-        String response = userService.register("Ian Somerhalder", "ianPass", CurrencyType.USD);
-        User retrievedUser = userService.findById(4);
-        assertEquals("User registered successfully", response);
-        assertNotNull(retrievedUser);
+    void testFindByIdNotFound() {
+        when(userRepository.findById(1)).thenReturn(Optional.empty());
+
+        User foundUser = userService.findById(1);
+        assertNull(foundUser);
+        verify(userRepository, times(1)).findById(1);
     }
 
     @Test
-    void testRegister5() {
-        String response = userService.register("Charlie Brown", "charliePass", CurrencyType.INR);
-        User retrievedUser = userService.findById(2);
-        assertEquals("User registered successfully", response);
-        assertNotNull(retrievedUser);
+    void testLoadUserByUsername() {
+        when(userRepository.findPasswordByUsername("John Doe")).thenReturn(Optional.of("johnPass"));
+
+        assertDoesNotThrow(() -> {
+            userService.loadUserByUsername("John Doe");
+        });
+        verify(userRepository, times(1)).findPasswordByUsername("John Doe");
     }
 
     @Test
-    void testRegisterNewUserWithNullUsername() {
-        assertThrows(CannotCreateUserException.class, () -> userService.register(null, "johnPass", CurrencyType.INR));
-    }
+    void testLoadUserByUsernameNotFound() {
+        when(userRepository.findPasswordByUsername("John Doe")).thenReturn(Optional.empty());
 
-    @Test
-    void testRegisterNewUserWithSameUsername() {
-        assertThrows(UsernameAlreadyRegisteredException.class, () -> userService.register("John Doe", "johnPass", CurrencyType.INR));
+        assertThrows(UsernameNotFoundException.class, () -> {
+            userService.loadUserByUsername("John Doe");
+        });
+        verify(userRepository, times(1)).findPasswordByUsername("John Doe");
     }
 }

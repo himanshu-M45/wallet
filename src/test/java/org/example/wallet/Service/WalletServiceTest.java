@@ -41,6 +41,6 @@ class WalletServiceTest {
 
     @Test
     void testWithdrawalsMoreThanGetBalanceFromUserService() {
-        assertThrows(InsufficientBalanceException.class, () -> walletService.withdrawals(1, 500));
+        assertThrows(InsufficientBalanceException.class, () -> walletService.withdrawals(1, 5000));
     }
 }

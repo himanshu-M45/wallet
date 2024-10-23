@@ -28,14 +28,14 @@ public class TransactionController {
     public ResponseEntity<ResponseDTO<String>> deposit(@PathVariable int userId, @PathVariable int walletId, @RequestBody WalletDTO payload) {
         userService.isUserAuthorized(userId, walletId);
         String response = walletService.deposits(walletId, payload.getAmount());
-        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "deposit successful", response));
+        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), response));
     }
 
     @PostMapping("/withdrawals")
     public ResponseEntity<ResponseDTO<String>> withdrawal(@PathVariable int userId, @PathVariable int walletId, @RequestBody WalletDTO payload) {
         userService.isUserAuthorized(userId, walletId);
         String response = walletService.withdrawals(walletId, payload.getAmount());
-        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), "withdrawal successful", response));
+        return ResponseEntity.ok(new ResponseDTO<>(HttpStatus.OK.value(), response));
     }
 
     @PostMapping("/transfers")
