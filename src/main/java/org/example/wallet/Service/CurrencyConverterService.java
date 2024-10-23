@@ -25,7 +25,7 @@ public class CurrencyConverterService {
     private int port;
 
     @PostConstruct
-    private void init() {
+    void init() {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .build();
