@@ -28,7 +28,7 @@ class WalletServiceTest {
     private TransactionService transactionService;
 
     @Mock
-    private CurrencyConverterService currencyConverterService;
+    private CurrencyConverterClient currencyConverterClient;
 
     @InjectMocks
     private WalletService walletService;
@@ -81,7 +81,7 @@ class WalletServiceTest {
 
         when(walletRepository.findById(1)).thenReturn(Optional.of(senderWallet));
         when(walletRepository.findById(2)).thenReturn(Optional.of(receiverWallet));
-        when(currencyConverterService.convertCurrency(100, "USD", "EUR")).thenReturn(85.0);
+        when(currencyConverterClient.convertCurrency(100, "USD", "EUR")).thenReturn(85.0);
 
         String result = walletService.transfer(1, 2, 100);
         assertEquals("Transaction successful", result);
@@ -105,7 +105,7 @@ class WalletServiceTest {
 
         when(walletRepository.findById(1)).thenReturn(Optional.of(senderWallet));
         when(walletRepository.findById(2)).thenReturn(Optional.of(receiverWallet));
-        when(currencyConverterService.convertCurrency(100, "USD", "EUR")).thenThrow(new RuntimeException("Currency conversion failed"));
+        when(currencyConverterClient.convertCurrency(100, "USD", "EUR")).thenThrow(new RuntimeException("Currency conversion failed"));
 
         assertThrows(RuntimeException.class, () -> walletService.transfer(1, 2, 100));
     }
