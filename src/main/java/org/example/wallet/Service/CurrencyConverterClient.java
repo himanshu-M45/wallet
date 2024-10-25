@@ -33,18 +33,18 @@ public class CurrencyConverterClient {
         log.info("gRPC client initialized, connecting to {}:{}", host, port);
     }
 
-    public double convertCurrency(double amount, String fromCurrency, String toCurrency) {
+    public double convertCurrency(double amount, String senderCurrency, String receiverCurrency) {
         try {
             ConvertRequest request = ConvertRequest.newBuilder()
                     .setAmount(amount)
-                    .setSenderCurrencyType(fromCurrency)
-                    .setReceiverCurrencyType(toCurrency)
+                    .setSenderCurrencyType(senderCurrency)
+                    .setReceiverCurrencyType(receiverCurrency)
                     .build();
 
             ConvertResponse response = blockingStub.convert(request);
             return response.getConvertedAmount();
         } catch (Exception e) {
-            log.error("Error converting currency: {} {} to {}", amount, fromCurrency, toCurrency, e);
+            log.error("Error converting currency: {} {} to {}", amount, senderCurrency, receiverCurrency, e);
             throw new RuntimeException("Currency conversion failed", e);
         }
     }
