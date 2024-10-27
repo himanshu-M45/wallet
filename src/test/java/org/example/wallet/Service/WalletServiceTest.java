@@ -1,5 +1,6 @@
 package org.example.wallet.Service;
 
+import org.example.wallet.Clients.CurrencyConverterClient;
 import org.example.wallet.Enums.CurrencyType;
 import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.InsufficientBalanceException;

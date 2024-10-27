@@ -1,6 +1,6 @@
-package org.example.wallet.Service;
+package org.example.wallet.Clients;
 
-import com.example.wallet.grpc.CurrencyConverterGrpc;
+import com.example.wallet.grpc.CurrencyConversionGrpc;
 import com.example.wallet.grpc.ConvertRequest;
 import com.example.wallet.grpc.ConvertResponse;
 import io.grpc.ManagedChannel;
@@ -16,7 +16,7 @@ import jakarta.annotation.PreDestroy;
 public class CurrencyConverterClient {
 
     private ManagedChannel channel;
-    private CurrencyConverterGrpc.CurrencyConverterBlockingStub blockingStub;
+    private CurrencyConversionGrpc.CurrencyConversionBlockingStub blockingStub;
 
     @Value("${grpc.server.host:localhost}")
     private String host;
@@ -29,7 +29,7 @@ public class CurrencyConverterClient {
         channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .build();
-        blockingStub = CurrencyConverterGrpc.newBlockingStub(channel);
+        blockingStub = CurrencyConversionGrpc.newBlockingStub(channel);
         log.info("gRPC client initialized, connecting to {}:{}", host, port);
     }
 

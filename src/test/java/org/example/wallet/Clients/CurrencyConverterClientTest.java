@@ -1,6 +1,6 @@
-package org.example.wallet.Service;
+package org.example.wallet.Clients;
 
-import com.example.wallet.grpc.CurrencyConverterGrpc;
+import com.example.wallet.grpc.CurrencyConversionGrpc;
 import com.example.wallet.grpc.ConvertRequest;
 import com.example.wallet.grpc.ConvertResponse;
 import io.grpc.ManagedChannel;
@@ -23,7 +23,7 @@ public class CurrencyConverterClientTest {
     private ManagedChannel channel;
 
     @Mock
-    private CurrencyConverterGrpc.CurrencyConverterBlockingStub blockingStub;
+    private CurrencyConversionGrpc.CurrencyConversionBlockingStub blockingStub;
 
     @InjectMocks
     private CurrencyConverterClient currencyConverterClient;

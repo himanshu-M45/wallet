@@ -1,6 +1,7 @@
 package org.example.wallet.Service;
 
 import jakarta.transaction.Transactional;
+import org.example.wallet.Clients.CurrencyConverterClient;
 import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.WalletNotFoundException;
 import org.example.wallet.Models.Wallet;
