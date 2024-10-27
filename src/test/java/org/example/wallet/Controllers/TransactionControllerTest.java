@@ -57,8 +57,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":100.0}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.statusCode").value(401))
-                .andExpect(jsonPath("$.message").value("user not authorized"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("user not authorized"));
 
         verify(userService, times(1)).isUserAuthorized(anyInt(), anyInt());
     }
@@ -72,7 +71,6 @@ class TransactionControllerTest {
                         .content("{\"amount\":100.0}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.message").value("deposit successful"))
                 .andExpect(jsonPath("$.data").value("updated balance: 200.0"));
 
         verify(walletService, times(1)).deposits(anyInt(), anyDouble());
@@ -88,8 +86,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":0.0}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
-                .andExpect(jsonPath("$.message").value("deposit amount cannot be negative or zero"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("deposit amount cannot be negative or zero"));
 
         verify(walletService, times(1)).deposits(anyInt(), anyDouble());
     }
@@ -104,8 +101,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").value(404))
-                .andExpect(jsonPath("$.message").value("wallet not found"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("wallet not found"));
 
         verify(walletService, times(1)).deposits(anyInt(), anyDouble());
     }
@@ -119,7 +115,6 @@ class TransactionControllerTest {
                         .content("{\"amount\":50.0}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.message").value("withdrawal successful"))
                 .andExpect(jsonPath("$.data").value("updated balance: 150.0"));
 
         verify(walletService, times(1)).withdrawals(anyInt(), anyDouble());
@@ -135,8 +130,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":-50.0}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
-                .andExpect(jsonPath("$.message").value("withdrawal amount cannot be negative or zero"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("withdrawal amount cannot be negative or zero"));
 
         verify(walletService, times(1)).withdrawals(anyInt(), anyDouble());
     }
@@ -151,8 +145,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":1000.0}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
-                .andExpect(jsonPath("$.message").value("insufficient balance"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("insufficient balance"));
 
         verify(walletService, times(1)).withdrawals(anyInt(), anyDouble());
     }
@@ -167,8 +160,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":100.0}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").value(404))
-                .andExpect(jsonPath("$.message").value("wallet not found"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("wallet not found"));
 
         verify(walletService, times(1)).withdrawals(anyInt(), anyDouble());
     }
@@ -183,7 +175,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":100.0,\"receiverId\":2}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.message").value("transfer successful"));
+                .andExpect(jsonPath("$.data").value("transfer successful"));
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -198,8 +190,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":1000.0,\"receiverId\":2}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
-                .andExpect(jsonPath("$.message").value("insufficient balance"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("insufficient balance"));
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -214,8 +205,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":100.0,\"receiverId\":24}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").value(404))
-                .andExpect(jsonPath("$.message").value("wallet not found"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("wallet not found"));
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -230,8 +220,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":0.0,\"receiverId\":2}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
-                .andExpect(jsonPath("$.message").value("invalid amount entered"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("invalid amount entered"));
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -245,8 +234,7 @@ class TransactionControllerTest {
                         .content("{\"amount\":100.0,\"receiverId\":2}"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.statusCode").value(500))
-                .andExpect(jsonPath("$.message").value("an error occurred"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("an error occurred"));
 
         verify(walletService, times(1)).transfer(anyInt(), anyInt(), anyDouble());
     }
@@ -292,8 +280,7 @@ class TransactionControllerTest {
         mockMvc.perform(get("/users/1/wallets/1/transactions"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.statusCode").value(404))
-                .andExpect(jsonPath("$.message").value("no transactions found"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("no transactions found"));
 
         verify(transactionService, times(1)).getTransactionsByWalletId(anyInt());
     }
@@ -307,8 +294,7 @@ class TransactionControllerTest {
                         .param("type", "INVALID"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
-                .andExpect(jsonPath("$.message").value("invalid transaction type"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("invalid transaction type"));
 
         verify(transactionService, times(1)).getTransactionsByType(anyInt(), any());
     }

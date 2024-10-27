@@ -48,7 +48,7 @@ public class UserControllerTest {
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statusCode").value(201))
-                .andExpect(jsonPath("$.message").value("user registered successfully"));
+                .andExpect(jsonPath("$.data").value("user registered successfully"));
 
         verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
     }
@@ -63,8 +63,7 @@ public class UserControllerTest {
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.statusCode").value(400))
-                .andExpect(jsonPath("$.message").value("name, password, currencyType cannot be null or empty"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("name, password, currencyType cannot be null or empty"));
 
         verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
     }
@@ -79,8 +78,7 @@ public class UserControllerTest {
                         .content("{\"name\": \"testUser\", \"password\": \"testPassword\", \"currencyType\": \"INR\"}"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.statusCode").value(409))
-                .andExpect(jsonPath("$.message").value("username already exists"))
-                .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(jsonPath("$.data").value("username already exists"));
 
         verify(userService, times(1)).register("testUser", "testPassword", CurrencyType.INR);
     }
