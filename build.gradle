@@ -29,7 +29,6 @@ dependencies {
     implementation 'org.postgresql:postgresql' //	postgresql
     implementation 'org.projectlombok:lombok:1.18.24' //	lombok
     annotationProcessor 'org.projectlombok:lombok:1.18.24' //	lombok
-    runtimeOnly 'com.h2database:h2' //	h2 database
     implementation 'org.springframework.boot:spring-boot-starter-security' //	spring security
     implementation 'org.liquibase:liquibase-core:4.20.0' //	liquibase
     // gRPC dependencies with fixed versions
