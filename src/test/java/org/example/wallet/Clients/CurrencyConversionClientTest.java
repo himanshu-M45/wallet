@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CurrencyConverterClientTest {
+public class CurrencyConversionClientTest {
 
     @Mock
     private ManagedChannel channel;
@@ -26,12 +26,12 @@ public class CurrencyConverterClientTest {
     private CurrencyConversionGrpc.CurrencyConversionBlockingStub blockingStub;
 
     @InjectMocks
-    private CurrencyConverterClient currencyConverterClient;
+    private CurrencyConversionClient currencyConversionClient;
 
     @BeforeEach
     void setUp() {
         // Directly set the mocked blockingStub
-        ReflectionTestUtils.setField(currencyConverterClient, "blockingStub", blockingStub);
+        ReflectionTestUtils.setField(currencyConversionClient, "blockingStub", blockingStub);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -62,7 +62,7 @@ public class CurrencyConverterClientTest {
         when(blockingStub.convert(any(ConvertRequest.class))).thenThrow(new RuntimeException("gRPC error"));
 
         try {
-            currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+            currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
         } catch (RuntimeException e) {
             assertEquals("Currency conversion failed", e.getMessage());
         }
@@ -83,7 +83,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -102,7 +102,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -121,7 +121,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -140,7 +140,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -159,7 +159,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -178,7 +178,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -197,7 +197,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));
@@ -212,7 +212,7 @@ public class CurrencyConverterClientTest {
         when(blockingStub.convert(any(ConvertRequest.class))).thenThrow(new RuntimeException("Invalid currency type"));
 
         try {
-            currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+            currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
         } catch (RuntimeException e) {
             assertEquals("Currency conversion failed", e.getMessage());
         }
@@ -233,7 +233,7 @@ public class CurrencyConverterClientTest {
 
         when(blockingStub.convert(any(ConvertRequest.class))).thenReturn(response);
 
-        double actualConvertedAmount = currencyConverterClient.convertCurrency(amount, senderCurrency, receiverCurrency);
+        double actualConvertedAmount = currencyConversionClient.convertCurrency(amount, senderCurrency, receiverCurrency);
 
         assertEquals(expectedConvertedAmount, actualConvertedAmount);
         verify(blockingStub, times(1)).convert(any(ConvertRequest.class));

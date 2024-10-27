@@ -1,6 +1,6 @@
 package org.example.wallet.Service;
 
-import org.example.wallet.Clients.CurrencyConverterClient;
+import org.example.wallet.Clients.CurrencyConversionClient;
 import org.example.wallet.Enums.CurrencyType;
 import org.example.wallet.Enums.TransactionType;
 import org.example.wallet.Exceptions.InsufficientBalanceException;
@@ -29,7 +29,7 @@ class WalletServiceTest {
     private TransactionService transactionService;
 
     @Mock
-    private CurrencyConverterClient currencyConverterClient;
+    private CurrencyConversionClient currencyConversionClient;
 
     @InjectMocks
     private WalletService walletService;
@@ -82,7 +82,7 @@ class WalletServiceTest {
 
         when(walletRepository.findById(1)).thenReturn(Optional.of(senderWallet));
         when(walletRepository.findById(2)).thenReturn(Optional.of(receiverWallet));
-        when(currencyConverterClient.convertCurrency(100, "USD", "EUR")).thenReturn(85.0);
+        when(currencyConversionClient.convertCurrency(100, "USD", "EUR")).thenReturn(85.0);
 
         String result = walletService.transfer(1, 2, 100);
         assertEquals("Transaction successful", result);
@@ -106,7 +106,7 @@ class WalletServiceTest {
 
         when(walletRepository.findById(1)).thenReturn(Optional.of(senderWallet));
         when(walletRepository.findById(2)).thenReturn(Optional.of(receiverWallet));
-        when(currencyConverterClient.convertCurrency(100, "USD", "EUR")).thenThrow(new RuntimeException("Currency conversion failed"));
+        when(currencyConversionClient.convertCurrency(100, "USD", "EUR")).thenThrow(new RuntimeException("Currency conversion failed"));
 
         assertThrows(RuntimeException.class, () -> walletService.transfer(1, 2, 100));
     }

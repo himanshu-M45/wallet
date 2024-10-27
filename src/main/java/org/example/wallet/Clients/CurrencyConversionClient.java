@@ -13,7 +13,7 @@ import jakarta.annotation.PreDestroy;
 
 @Slf4j
 @Service
-public class CurrencyConverterClient {
+public class CurrencyConversionClient {
 
     private ManagedChannel channel;
     private CurrencyConversionGrpc.CurrencyConversionBlockingStub blockingStub;
